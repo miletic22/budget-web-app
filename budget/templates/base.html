@@ -7,21 +7,21 @@
 <body>
     <nav>
         {% if user.is_authenticated %}
+        <p>Welcome, {{ current_user.username }}, #{{ current_user.id }}</p>
         <a href="/">Home</a>
-        <a href="/logout">logout</a>
+        <a href="/settings">Settings</a>
+        <a href="/logout">Logout</a>
         {% else %}
         <a href="/login">Login</a>
         <a href="/signup">Register</a>
+        
         {% endif %}
     </nav>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages%}
+    {% if messages %}
         {% for message in messages %}
-            <p>
-                {{ message }}
-            </p>
-
+            <p>{{ message }}</p>
         {% endfor %}
     {% endif %}
     {% endwith %}

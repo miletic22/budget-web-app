@@ -1,5 +1,29 @@
 {% extends 'base.html' %}
-
 {% block content %}
-        
+    <h1>Transactions</h1>
+    <ul id="transactions">
+        {% for transaction in user.transactions %}
+            <!-- Add your code for each transaction here -->
+        {% endfor %}
+    </ul>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Category Name</th>
+                <th>Transaction Amount</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_budget in current_user.budgets %}
+                {% for transaction in user_budget.category.transactions %}
+                    <tr>
+                        <td>{{ user_budget.category.category_name }}</td>
+                        <td>{{ transaction.amount }}</td>
+                        <td>{{ transaction.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

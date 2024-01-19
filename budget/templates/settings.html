@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <br>
+    <form method="POST" name="budget-update" action="/settings">
+        <label for="budget_amount">Budget amount:</label>
+        <input 
+            type="text"
+            name="budget_amount"
+            placeholder="Budget amount">
+        <!-- Add a hidden input field for form_type -->
+        <input type="hidden" name="form_type" value="budget-update">
+        <button type="submit">Update Budget</button>
+    </form>
+    <br>
+
+    <form method="POST">
+        <h3>Settings</h3>
+        <!-- CATEGORY 1 -->
+        <label for="category_1_name">Category 1:</label>
+        <input 
+            type="text" 
+            name="category_1_name" 
+            placeholder="Category Name">
+        <input 
+            type="text" 
+            name="category_1_amount" 
+            placeholder="Category Amount">
+        <br>
+        <!-- CATEGORY 2 -->
+        <label for="category_2_name">Category 2:</label>
+        <input 
+            type="text" 
+            name="category_2_name" 
+            placeholder="Category Name">
+        <input 
+            type="text" 
+            name="category_2_amount" 
+            placeholder="Category Amount">
+        <br>
+        <!-- CATEGORY 3 -->
+        <label for="category_3_name">Category 3:</label>
+        <input 
+            type="text" 
+            name="category_3_name" 
+            placeholder="Category Name">
+        <input 
+            type="text" 
+            name="category_3_amount" 
+            placeholder="Category Amount">
+        <br>
+        <!-- CATEGORY 4 -->
+        <label for="category_4_name">Category 4:</label>
+        <input 
+            type="text" 
+            name="category_4_name" 
+            placeholder="Category Name">
+        <input 
+            type="text" 
+            name="category_4_amount" 
+            placeholder="Category Amount">
+        <br>
+        <!-- CATEGORY 5 -->
+        <label for="category_5_name">Category 5:</label>
+        <input 
+            type="text" 
+            name="category_5_name" 
+            placeholder="Category Name">
+        <input 
+            type="text" 
+            name="category_5_amount" 
+            placeholder="Category Amount">
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

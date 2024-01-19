@@ -16,7 +16,7 @@ def create_app():
     
     app.register_blueprint(views, url_prefix='/')
     
-    from .models import User, UserBudget, BudgetCategory, CategoryTransactions
+    from .models import User, Budget, Category, Transaction
     
     create_database(app)
     
