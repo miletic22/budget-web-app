@@ -1,15 +1,55 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import db
+from .models import User, Budget, Category, Transaction
 from flask_login import login_user, login_required, logout_user, current_user
+import uuid
+from . import db
+from sqlalchemy.sql import func
 
 views = Blueprint('views', __name__)
 
-@views.route('/')
+@views.route('/', methods=['GET', 'POST'])
 @login_required
 def home_page():
+    if request.method == 'POST':
+        transaction = request.form.get('transaction')
     return render_template('index.html', user=current_user)
+
+
+@views.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if request.method == 'POST':
+        form_type = request.form.get('form_type')
+
+        if form_type == 'budget-update':
+            budget_amount_str = request.form.get('budget_amount')
+            
+            try:
+                # Try to convert the input to a numerical value
+                budget_amount = int(budget_amount_str)
+            except ValueError:
+                # If conversion fails, display an error message
+                flash('Budget amount has to be a numerical value', category='error')
+                return render_template('settings.html', user=current_user)
+
+            user_budget = Budget.query.filter_by(user_id=current_user.id).first()
+            if user_budget:
+                user_budget.amount = budget_amount
+                user_budget.updated_at = func.now()
+                db.session.commit()
+            else:
+                new_budget = Budget(created_at=func.now(),
+                                    updated_at = func.now(),
+                                    amount=budget_amount,
+                                    user_id=current_user.id)
+                db.session.add(new_budget)
+                db.session.commit()
+            
+            flash('Budget updated.', category='success')
+
+    return render_template('settings.html', user=current_user)
+
 
 @views.route('/login', methods=['GET', 'POST'])
 def login():
@@ -50,34 +90,28 @@ def sign_up():
         username = request.form.get('username')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
-        
+
         user = User.query.filter_by(email=email).first()
-        print(email)
+        
         if user:
             flash("User already exists", category='error')
         elif len(email) < 4:
             flash('Invalid email: must be longer than 4 characters.', category='error')
-            
         elif len(username) < 2: 
             flash('Invalid username: must be longer than 2 characters.', category='error')
-            
         elif password1 != password2:
             flash('Passwords do not match.', category='error')
-
         elif len(password1) < 7:
             flash('Invalid password: must be longer than 7 characters.', category='error')
-
         else:
-            new_user = User(email=email, 
-                            username=username, 
-                            password = generate_password_hash(password1, method='pbkdf2:sha256'),
-                            deleted_at = None)
-            flash('Account created.', category='success')
+            new_user = User(username=username,
+                            email=email, 
+                            password=generate_password_hash(password1, method='pbkdf2:sha256'))
             db.session.add(new_user)
             db.session.commit()
-            login_user(user, remember=True)
-            flash('Account created', category='success')
-            
-            return redirect(url_for('views.home_page'))
+
+            flash('Account created.', category='success')       
+            login_user(new_user, remember=True)
+            return redirect(url_for('views.settings'))
             
     return render_template('register.html', user=current_user)
