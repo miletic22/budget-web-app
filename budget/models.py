@@ -25,6 +25,9 @@ class Budget(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
     
     categories = db.relationship('Category', backref='budget')
+    
+    def __repr__(self):
+        return f"{self.id} {self.amount} {self.user_id}"
 
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -32,6 +35,7 @@ class Category(db.Model):
     updated_at = db.Column(db.DateTime(timezone=True))
     deleted_at = db.Column(db.DateTime(timezone=True))    
     
+    reference_number = db.Column(db.Integer)
     name = db.Column(db.String(150))
     amount = db.Column(db.Integer)
     

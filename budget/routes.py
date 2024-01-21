@@ -34,19 +34,43 @@ def settings():
                 return render_template('settings.html', user=current_user)
 
             user_budget = Budget.query.filter_by(user_id=current_user.id).first()
-            if user_budget:
-                user_budget.amount = budget_amount
-                user_budget.updated_at = func.now()
-                db.session.commit()
-            else:
-                new_budget = Budget(created_at=func.now(),
-                                    updated_at = func.now(),
-                                    amount=budget_amount,
-                                    user_id=current_user.id)
-                db.session.add(new_budget)
-                db.session.commit()
-            
+            user_budget.amount = budget_amount
+            user_budget.updated_at = func.now()
+            db.session.commit()
+                        
             flash('Budget updated.', category='success')
+        
+        if form_type == 'categories-update':
+            form_data = request.form
+            categories_data = []
+
+            # Iterate through form data and extract category names, amounts, and reference numbers
+            for key, value in form_data.items():
+                if key.startswith('category_') and key.endswith('_name'):
+                    category_number = key.split('_')[1]
+                    category_name = value
+                    category_amount = form_data.get(f'category_{category_number}_amount', '')
+                    reference_number = int(category_number)
+
+                    categories_data.append({
+                        'reference_number': reference_number,
+                        'name': category_name,
+                        'amount': category_amount
+                    })
+            for category_data in categories_data:
+                category = Category.query.filter_by(
+                    budget_id = current_user.budget.id,
+                    reference_number=category_data['reference_number']
+                ).first()
+
+                category.updated_at = func.now()
+                category.name = category_data['name']
+                category.amount = category_data['amount']                
+
+            db.session.commit()  # Commit changes to the database
+            flash('Categories updated.', category='success')
+
+                    
 
     return render_template('settings.html', user=current_user)
 
@@ -109,9 +133,28 @@ def sign_up():
                             password=generate_password_hash(password1, method='pbkdf2:sha256'))
             db.session.add(new_user)
             db.session.commit()
-
             flash('Account created.', category='success')       
             login_user(new_user, remember=True)
+            
+            new_budget = Budget(created_at = func.now(),
+                                updated_at = func.now(),
+                                amount=0,
+                                user_id=current_user.id)
+            db.session.add(new_budget)
+            db.session.commit()
+            for reference_number in range(1, 6):
+                category = Category(
+                    created_at=func.now(),
+                    updated_at=func.now(),
+                    reference_number=reference_number,
+                    name=f'Category {reference_number}',
+                    amount=0,
+                    budget_id=current_user.budget.id
+                )
+                db.session.add(category)
+            db.session.commit()
+
+            
             return redirect(url_for('views.settings'))
             
     return render_template('register.html', user=current_user)

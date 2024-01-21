@@ -14,7 +14,7 @@
     </form>
     <br>
 
-    <form method="POST">
+    <form method="POST" name="categories-update">
         <h3>Settings</h3>
         <!-- CATEGORY 1 -->
         <label for="category_1_name">Category 1:</label>
@@ -71,6 +71,7 @@
             name="category_5_amount" 
             placeholder="Category Amount">
         <br>
+        <input type="hidden" name="form_type" value="categories-update">
         <button type="submit">Submit</button>
     </form>
 {% endblock %}
