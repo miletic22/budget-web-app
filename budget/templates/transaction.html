@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h3>Add a transaction</h3>
+    <p>This will be moved back to tracker.html but as a popup window</p>
+
+    <form method="POST">
+        <!-- Dropdown menu with category names -->
+        <label for="category_dropdown">Select Category:</label>
+        <select id="category_dropdown" name="selected_category">
+          <option value="" disabled selected>Select Category</option>
+          {% for category in current_user.budget.categories %}
+            <option value="{{ category.name }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <!-- Text field for 'amount' -->
+        <label for="amount">Amount:</label>
+        <input type="text" id="amount" name="amount">
+        
+        <label for="note">Note:</label>
+        <input type="text" id="note" name="note">
+        <br>
+        <!-- Button to submit the form -->
+        <button type="submit">Send Data</button>
+      </form>
+{% endblock %}

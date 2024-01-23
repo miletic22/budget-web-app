@@ -158,3 +158,31 @@ def sign_up():
             return redirect(url_for('views.settings'))
             
     return render_template('register.html', user=current_user)
+
+
+@views.route('/transaction', methods=["GET", "POST"])
+def transaction():
+    if request.method == "POST":
+        category_name = request.form.get('selected_category')
+        amount = request.form.get('amount')
+        
+        if not amount.replace('.', '', 1).isdigit():
+            flash("Amount has to be a numeric value", category='error')
+        
+        elif not category_name:
+            flash("Please select a category", category='error')
+
+        else:
+            category_query = Category.query.join(Budget)
+            specific_category = category_query.filter(Budget.user_id == current_user.id, Category.name == category_name).first()
+            new_transaction = Transaction(
+                created_at = func.now(),
+                updated_at = func.now(),
+                amount = amount,
+                category_id = specific_category.id
+            )
+            db.session.add(new_transaction)
+            db.session.commit()
+            flash(f'Added transaction under "{specific_category.name}" Category for ${amount}', category='success')
+     
+    return render_template('transaction.html', user = current_user)
