@@ -2,6 +2,7 @@
 
 {% block content %}
     <br>
+    <h3>Settings</h3
     <form method="POST" name="budget-update" action="/settings">
         <label for="budget_amount">Budget amount:</label>
         <input 
@@ -13,9 +14,9 @@
         <button type="submit">Update Budget</button>
     </form>
     <br>
+    <br>
 
     <form method="POST" name="categories-update">
-        <h3>Settings</h3>
         <!-- CATEGORY 1 -->
         <label for="category_1_name">Category 1:</label>
         <input 
@@ -74,4 +75,10 @@
         <input type="hidden" name="form_type" value="categories-update">
         <button type="submit">Submit</button>
     </form>
+    <br>
+    <form method="POST" name="user-delete">
+        <input type="hidden" name="user_id" value="{{ current_user.id }}">
+        <input type="hidden" name="form_type" value="user-delete">
+        <button type="submit">Delete Account</button>
+    </form>    
 {% endblock %}

@@ -49,5 +49,6 @@ class Transaction(db.Model):
     deleted_at = db.Column(db.DateTime(timezone=True))
     
     amount = db.Column(db.Integer)
+    note = db.Column(db.String(120))
     
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))

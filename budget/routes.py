@@ -13,7 +13,13 @@ views = Blueprint('views', __name__)
 @login_required
 def home_page():
     if request.method == 'POST':
-        transaction = request.form.get('transaction')
+        transaction_id = request.form.get('transaction_id')
+        transaction = Transaction.query.filter_by(id = transaction_id).first()
+        transaction.deleted_at = func.now()
+        db.session.commit()
+                        
+        flash('Transaction deleted.', category='success')
+        
     return render_template('index.html', user=current_user)
 
 
@@ -69,8 +75,28 @@ def settings():
 
             db.session.commit()  # Commit changes to the database
             flash('Categories updated.', category='success')
+        
+        if form_type == 'user-delete':
+            user_id = request.form.get("user_id")
+            current_user.deleted_at = func.now()
+            
+            # Soft delete the user's budget
+            if current_user.budget:
+                current_user.budget.deleted_at = func.now()
 
-                    
+                # Soft delete the budget's categories
+                for category in current_user.budget.categories:
+                    category.deleted_at = func.now()
+
+                    # Soft delete the category's transactions
+                    for transaction in category.transactions:
+                        transaction.deleted_at = func.now()
+                        
+            db.session.commit()
+            logout()
+            flash("You had deleted your account successfully", category='success')
+            return redirect(url_for('views.login'))
+
 
     return render_template('settings.html', user=current_user)
 
@@ -87,7 +113,7 @@ def login():
         ).first()
 
         print(user)
-        if user:
+        if user and not user.deleted_at:
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
@@ -155,30 +181,33 @@ def sign_up():
             db.session.commit()
 
             
-            return redirect(url_for('views.settings'))
+            return redirect(url_for('views.home_page'))
             
     return render_template('register.html', user=current_user)
 
 
 @views.route('/transaction', methods=["GET", "POST"])
 def transaction():
+    print(request.form)
     if request.method == "POST":
         category_name = request.form.get('selected_category')
         amount = request.form.get('amount')
-        
+        note = request.form.get('note')
         if not amount.replace('.', '', 1).isdigit():
             flash("Amount has to be a numeric value", category='error')
         
         elif not category_name:
             flash("Please select a category", category='error')
-
         else:
+            if note == "":
+                note = "N/A"
             category_query = Category.query.join(Budget)
             specific_category = category_query.filter(Budget.user_id == current_user.id, Category.name == category_name).first()
             new_transaction = Transaction(
                 created_at = func.now(),
                 updated_at = func.now(),
                 amount = amount,
+                note = note,
                 category_id = specific_category.id
             )
             db.session.add(new_transaction)

@@ -29,25 +29,53 @@
             <tr>
                 <th>Category</th>
                 <th>Transaction Amount</th>
+                <th>Note</th>
                 <th>Date</th>
+                <th>Action</th> <!-- New column for the delete button -->
             </tr>
         </thead>
         <tbody>
             {% for category in current_user.budget.categories %}
                 {% for transaction in category.transactions %}
-                    <tr>
-                        <td>{{ category.name }}</td>
-                        <td>{{ transaction.amount }}</td>
-                        <td>{{ transaction.created_at }}</td>
-                    </tr>
+                    {% if not transaction.deleted_at %}
+                        <tr>
+                            <td>{{ category.name }}</td>
+                            <td>{{ transaction.amount }}</td>
+                            <td>{{ transaction.note }}</td>
+                            <td>{{ transaction.created_at }}</td>
+                            <td>
+                                <!-- Delete button and form -->
+                                <form method="POST">
+                                    
+                                    <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
         </tbody>
     </table>
     
+    
     <br>
     <button><a href="/transaction">Add Transaction</a></button>
     
-
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+    
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    
+        th {
+            background-color: #f2f2f2;
+        }
  
 {% endblock %}
