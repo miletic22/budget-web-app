@@ -9,7 +9,7 @@ from app.utils import get_budget_query_by_id, reactivate_soft_deleted_budget
 from .. import models, oauth2, schemas
 from ..database import get_db
 
-router = APIRouter(prefix="/budgets", tags=["Users"])
+router = APIRouter(prefix="/budgets", tags=["Budgets"])
 
 
 @router.get("/all", response_model=List[schemas.BudgetOut])
