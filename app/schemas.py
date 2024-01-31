@@ -21,11 +21,11 @@ class BudgetBase(BaseModel):
     id: int
             
 class BudgetCreate(BaseModel):
-    user_id: int
     amount: int
 
 class BudgetOut(BudgetCreate, BaseModel):
     id: int
+    user_id: int
     created_at: datetime
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
