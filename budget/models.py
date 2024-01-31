@@ -5,8 +5,8 @@ from sqlalchemy.sql import func
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key = True)    
     created_at = db.Column(db.DateTime(timezone=True))
-    updated_at = db.Column(db.DateTime(timezone=True))
-    deleted_at = db.Column(db.DateTime(timezone=True))
+    updated_at = db.Column(db.DateTime(timezone=True), nullable=True)
+    deleted_at = db.Column(db.DateTime(timezone=True), nullable=True)
     
     username = db.Column(db.String(150), unique=True)
     email = db.Column(db.String(150), unique=True)
@@ -18,8 +18,8 @@ class User(db.Model, UserMixin):
 class Budget(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     created_at = db.Column(db.DateTime(timezone=True))
-    updated_at = db.Column(db.DateTime(timezone=True))
-    deleted_at = db.Column(db.DateTime(timezone=True))
+    updated_at = db.Column(db.DateTime(timezone=True), nullable=True)
+    deleted_at = db.Column(db.DateTime(timezone=True), nullable=True)
     
     amount = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) 
@@ -32,8 +32,8 @@ class Budget(db.Model):
 class Category(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     created_at = db.Column(db.DateTime(timezone=True))
-    updated_at = db.Column(db.DateTime(timezone=True))
-    deleted_at = db.Column(db.DateTime(timezone=True))    
+    updated_at = db.Column(db.DateTime(timezone=True), nullable=True)
+    deleted_at = db.Column(db.DateTime(timezone=True), nullable=True)    
     
     reference_number = db.Column(db.Integer)
     name = db.Column(db.String(150))
@@ -45,8 +45,8 @@ class Category(db.Model):
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     created_at = db.Column(db.DateTime(timezone=True))
-    updated_at = db.Column(db.DateTime(timezone=True))
-    deleted_at = db.Column(db.DateTime(timezone=True))
+    updated_at = db.Column(db.DateTime(timezone=True), nullable=True)
+    deleted_at = db.Column(db.DateTime(timezone=True), nullable=True)
     
     amount = db.Column(db.Integer)
     note = db.Column(db.String(120))

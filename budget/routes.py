@@ -27,8 +27,9 @@ def home_page():
 def settings():
     if request.method == 'POST':
         form_type = request.form.get('form_type')
-
+        print(form_type)
         if form_type == 'budget-update':
+            
             budget_amount_str = request.form.get('budget_amount')
             
             try:
