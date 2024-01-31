@@ -4,8 +4,6 @@ from . import models
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-import datetime
-import json
 
 
 # Create a password context for hashing passwords
@@ -85,19 +83,4 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         bool: True if matched, False otherwise.
     """
     return pwd_context.verify(plain_password, hashed_password)
-
-
-def serialize_datetime(datetime_object) -> str:
-    """
-    Serializes a datetime object to a JSON-formatted string.
-
-    Args:
-        datetime_object: A datetime object to be serialized.
-
-    Returns:
-        str: JSON-formatted string representing the serialized datetime.
-    """
-    dt_str = datetime_object.strftime("%Y-%m-%d %H:%M:%S")
-    json_str = json.dumps(dt_str)
-    return json_str
 

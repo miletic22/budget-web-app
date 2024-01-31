@@ -1,4 +1,4 @@
-# https://youtu.be/0sOvCWFmrtA?si=zAdy7lJ9D6pdud_D&t=23570
+# https://youtu.be/0sOvCWFmrtA?si=ka2uUNv7bLdQssi1&t=27777
 
 from . import models
 from .database import engine
