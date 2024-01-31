@@ -2,7 +2,7 @@
 
 from . import models
 from .database import engine
-from .routers import user, budget
+from .routers import user, budget, auth
 import time
 from fastapi import FastAPI
 import psycopg2
@@ -33,3 +33,4 @@ while True:
 
 app.include_router(budget.router)
 app.include_router(user.router)
+app.include_router(auth.router)
