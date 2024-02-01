@@ -84,3 +84,55 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
     return pwd_context.verify(plain_password, hashed_password)
 
+
+def get_category_by_id(db: Session, category_id: int):
+    """
+    Retrieves a category from the database based on its ID.
+
+    Input:
+        db (Session): SQLAlchemy database session.
+        category_id (int): Unique identifier of the category to retrieve.
+
+    Output:
+        models.Category: The category if found, otherwise None.
+    """
+    return db.query(models.Category).filter(models.Category.id == category_id).first()
+
+
+def get_user_budget(db: Session, user_id: int):
+    """
+    Retrieves a budget from the database based on its user ID.
+
+    Input:
+        db (Session): SQLAlchemy database session.
+        user_id (int): Unique identifier of the user whose budget to retrieve.
+
+    Output:
+        models.Budget: The budget if found, otherwise None.
+    """
+    return db.query(models.Budget).filter(models.Budget.user_id == user_id).first()
+
+
+def get_user_category(db: Session, user_id: int, category_id: int):
+    """
+    Retrieves a category for a specific user from the database based on its ID.
+
+    Input:
+        db (Session): SQLAlchemy database session.
+        user_id (int): Unique identifier of the user.
+        category_id (int): Unique identifier of the category to retrieve.
+
+    Output:
+        models.Category: The category if found and not deleted, otherwise None.
+    """
+    return (
+        db.query(models.Category)
+        .join(models.Budget)
+        .filter(
+            models.Category.id == category_id,
+            models.Budget.user_id == user_id,
+            models.Category.budget_id == models.Budget.id,
+            models.Category.deleted_at.is_(None),
+        )
+        .first()
+    ) 

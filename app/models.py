@@ -1,11 +1,9 @@
 from sqlalchemy import (
-    Boolean,
     Column,
     Integer,
     String,
     TIMESTAMP,
     func,
-    text,
     ForeignKey,
 )
 from flask_sqlalchemy import SQLAlchemy
