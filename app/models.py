@@ -42,7 +42,7 @@ class Budget(Base):
     amount = Column(Integer)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
 
-    owner = db.relationship("User", back_populates="budget", foreign_keys=[user_id])
+    owner = db.relationship("User", back_populates="budget")
     categories = db.relationship("Category", backref="budget")
 
 

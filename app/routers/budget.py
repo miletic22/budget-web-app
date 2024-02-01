@@ -26,7 +26,7 @@ def get_all_budgets(
 def get_budget(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     # Retrieve the budget for the current user
     budget = db.query(models.Budget).filter(models.Budget.user_id == current_user.id).first()
-    print(current_user.id)
+    
     # Check if the budget exists
     if not budget or budget.deleted_at:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Budget not found")
@@ -40,7 +40,6 @@ def create_budget(
     db: Session = Depends(get_db),
     current_user: int = Depends(oauth2.get_current_user),
 ):
-    print(current_user)
     # Check if a budget already exists for the user
     existing_budget = (
         db.query(models.Budget)

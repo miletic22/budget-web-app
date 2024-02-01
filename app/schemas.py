@@ -45,3 +45,23 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: Optional[int] = None
+    
+    
+
+class CategoryCreate(BaseModel):
+    name: str
+    amount: int
+
+class CategoryOut(CategoryCreate, BaseModel):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+    deleted_at: Optional[datetime]
+    budget_id: int
+    budget: BudgetOut
+    
+    class Config:
+        from_attributes = True
+
+class CategoryUpdate(CategoryCreate, BaseModel):
+    ...
