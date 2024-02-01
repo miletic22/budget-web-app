@@ -29,6 +29,7 @@ class BudgetOut(BudgetCreate, BaseModel):
     created_at: datetime
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
+    owner: UserOut
     
 class BudgetUpdate(BaseModel):
     amount: int

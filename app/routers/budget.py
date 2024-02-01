@@ -12,6 +12,7 @@ from ..database import get_db
 router = APIRouter(prefix="/budgets", tags=["Budgets"])
 
 
+# for easier testing purposes
 @router.get("/all", response_model=List[schemas.BudgetOut])
 def get_all_budgets(
     db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)

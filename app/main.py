@@ -1,8 +1,8 @@
-# https://youtu.be/0sOvCWFmrtA?si=ka2uUNv7bLdQssi1&t=27777
+# https://youtu.be/0sOvCWFmrtA?si=yzXa4GuYRxZKZ1pi&t=30102
 
 from . import models
 from .database import engine
-from .routers import user, budget, auth
+from .routers import user, budget, auth, category
 import time
 from fastapi import FastAPI
 import psycopg2
@@ -34,3 +34,4 @@ while True:
 app.include_router(budget.router)
 app.include_router(user.router)
 app.include_router(auth.router)
+app.include_router(category.router)

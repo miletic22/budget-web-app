@@ -27,8 +27,8 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
 
-    budget = db.relationship("Budget", backref="user", uselist=False)
-
+    budget_id = Column(Integer, ForeignKey("budgets.id", ondelete="SET NULL"))
+    budget = db.relationship("Budget", back_populates="owner", uselist=False)
 
 class Budget(Base):
     __tablename__ = "budgets"
@@ -43,6 +43,7 @@ class Budget(Base):
     amount = Column(Integer)
     user_id = Column(Integer, ForeignKey("users.id"))
 
+    owner = db.relationship("User")
     categories = db.relationship("Category", backref="budget")
 
 
