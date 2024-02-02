@@ -1,10 +1,9 @@
-from app import oauth2
+from app import oauth2, utils
 from .. import models, schemas
-from app.utils import check_deleted, check_existence, check_ownership
+from app.utils import check_deleted, check_existence
 from fastapi import Depends, status, APIRouter
 from ..database import get_db
 from sqlalchemy.orm import Session
-
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
