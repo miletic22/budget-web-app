@@ -176,23 +176,21 @@ def get_user_transaction(db: Session, user_id: int, transaction_id: int):
     )
 
 
-def check_existence(obj, custom_message: str = None, expect_existence: bool = False):
+
+def check_existence(obj, custom_message: str = None, expect_existence: bool = False, custom_status_code: int = None):
     if expect_existence and obj:
-        detail_message = (
-            custom_message if custom_message else f"{type(obj).__name__} already exists"
-        )
+        detail_message = custom_message if custom_message else f"{type(obj).__name__} already exists"
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=custom_status_code or status.HTTP_400_BAD_REQUEST,
             detail=detail_message,
         )
     elif not expect_existence and not obj:
-        detail_message = (
-            custom_message if custom_message else f"{type(obj).__name__} not found"
-        )
+        detail_message = custom_message if custom_message else f"{type(obj).__name__} not found"
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=custom_status_code or status.HTTP_404_NOT_FOUND,
             detail=detail_message,
         )
+
 
 
 def check_deleted(obj):
