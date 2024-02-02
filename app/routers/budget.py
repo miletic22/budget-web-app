@@ -4,13 +4,12 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.utils import get_budget_query_by_id, reactivate_soft_deleted_budget
+from app.utils import check_deleted, check_existence, get_budget_query_by_id, reactivate_soft_deleted_budget
 
 from .. import models, oauth2, schemas
 from ..database import get_db
 
 router = APIRouter(prefix="/budgets", tags=["Budgets"])
-
 
 # for easier testing purposes
 @router.get("/all", response_model=List[schemas.BudgetOut])
@@ -27,9 +26,8 @@ def get_budget(db: Session = Depends(get_db), current_user: int = Depends(oauth2
     # Retrieve the budget for the current user
     budget = db.query(models.Budget).filter(models.Budget.user_id == current_user.id).first()
     
-    # Check if the budget exists
-    if not budget or budget.deleted_at:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Budget not found")
+    check_existence(budget, f"Budget not set")
+    check_deleted(budget)
 
     return budget
 
@@ -48,12 +46,9 @@ def create_budget(
             models.Budget.deleted_at.is_(None), # Exclude soft-deleted budgets
         )
         .first()
-    )  
-    if existing_budget:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"User with id: {current_user.id} already has a budget",
-        )
+    )
+    
+    check_existence(existing_budget, custom_message=f"User with id: {current_user.id} already has a budget", expect_existence=True)
 
     # # Check if the user exists
     # Not needed due to authentication
@@ -97,11 +92,7 @@ def update_budget(
     )
     existing_budget = budget_query.first()
 
-    if existing_budget.deleted_at:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with id: {current_user.id} does not have a budget",
-    )
+    check_deleted(existing_budget)
         
 
     existing_budget.updated_at = func.now()
@@ -120,18 +111,11 @@ def delete_budget(
     # Check if budget exists
     budget_query = get_budget_query_by_id(db, current_user.id)
     existing_budget = budget_query.first()
-    if not existing_budget:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Budget for user {current_user.id} not found",
-        )
+    
+    check_existence(existing_budget, f"Budget for user {current_user.id} not found")
 
     # Check if budget has already been deleted
-    if existing_budget.deleted_at:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Budget for user {current_user.id} has already been deleted",
-        )
+    check_deleted(existing_budget)
 
     # Soft delete the budget
     existing_budget.deleted_at = func.now()
