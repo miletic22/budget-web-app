@@ -10,6 +10,7 @@ from sqlalchemy import func
 # Create a password context for hashing passwords
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 def hash(password: str):
     """
     Hashes the provided password using the configured password context.
@@ -23,7 +24,9 @@ def hash(password: str):
     return pwd_context.hash(password)
 
 
-def reactivate_soft_deleted_budget(db: Session, user_id: int, budget_data: dict) -> models.Budget:
+def reactivate_soft_deleted_budget(
+    db: Session, user_id: int, budget_data: dict
+) -> models.Budget:
     """
     Reactivates a soft-deleted budget for a given user.
 
@@ -37,8 +40,7 @@ def reactivate_soft_deleted_budget(db: Session, user_id: int, budget_data: dict)
     """
     # Query the soft-deleted budget for the user
     budget_query = db.query(models.Budget).filter(
-        models.Budget.user_id == user_id,
-        models.Budget.deleted_at.isnot(None)
+        models.Budget.user_id == user_id, models.Budget.deleted_at.isnot(None)
     )
 
     # Execute the query to get the budget instance
@@ -71,6 +73,7 @@ def get_budget_query_by_id(db: Session, user_id: int) -> models.Budget:
         models.Budget: The budget if found, otherwise None.
     """
     return db.query(models.Budget).filter(models.Budget.user_id == user_id)
+
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
@@ -133,12 +136,11 @@ def get_user_category(db: Session, user_id: int, category_id: int):
             models.Category.id == category_id,
             models.Budget.user_id == user_id,
             models.Category.budget_id == models.Budget.id,
-            models.Category.deleted_at.is_(None),
         )
         .first()
     )
-    
-    
+
+
 def get_transaction_by_id(db: Session, transaction_id: int):
     """
     Retrieves a transaction from the database based on its ID.
@@ -150,7 +152,11 @@ def get_transaction_by_id(db: Session, transaction_id: int):
     Output:
         models.Transaction: The transaction if found, otherwise None.
     """
-    return db.query(models.Transaction).filter(models.Transaction.id == transaction_id).first()
+    return (
+        db.query(models.Transaction)
+        .filter(models.Transaction.id == transaction_id)
+        .first()
+    )
 
 
 def get_user_transaction(db: Session, user_id: int, transaction_id: int):
@@ -169,15 +175,20 @@ def get_user_transaction(db: Session, user_id: int, transaction_id: int):
         .first()
     )
 
+
 def check_existence(obj, custom_message: str = None, expect_existence: bool = False):
     if expect_existence and obj:
-        detail_message = custom_message if custom_message else f"{type(obj).__name__} already exists"
+        detail_message = (
+            custom_message if custom_message else f"{type(obj).__name__} already exists"
+        )
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=detail_message,
         )
     elif not expect_existence and not obj:
-        detail_message = custom_message if custom_message else f"{type(obj).__name__} not found"
+        detail_message = (
+            custom_message if custom_message else f"{type(obj).__name__} not found"
+        )
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=detail_message,
@@ -185,14 +196,15 @@ def check_existence(obj, custom_message: str = None, expect_existence: bool = Fa
 
 
 def check_deleted(obj):
-    if hasattr(obj, 'deleted_at') and obj.deleted_at:
+    if hasattr(obj, "deleted_at") and obj.deleted_at:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"{type(obj).__name__} is deleted",
         )
 
+
 def check_ownership(obj, current_user_id: int):
-    if hasattr(obj, 'budget') and obj.budget.owner.id != current_user_id:
+    if hasattr(obj, "budget") and obj.budget.owner.id != current_user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authorized",

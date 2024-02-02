@@ -4,12 +4,18 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.utils import check_deleted, check_existence, get_budget_query_by_id, reactivate_soft_deleted_budget
+from app.utils import (
+    check_deleted,
+    check_existence,
+    get_budget_query_by_id,
+    reactivate_soft_deleted_budget,
+)
 
 from .. import models, oauth2, schemas
 from ..database import get_db
 
 router = APIRouter(prefix="/budgets", tags=["Budgets"])
+
 
 # for easier testing purposes
 @router.get("/all", response_model=List[schemas.BudgetOut])
@@ -22,10 +28,14 @@ def get_all_budgets(
 
 
 @router.get("/", response_model=schemas.BudgetOut)
-def get_budget(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+def get_budget(
+    db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)
+):
     # Retrieve the budget for the current user
-    budget = db.query(models.Budget).filter(models.Budget.user_id == current_user.id).first()
-    
+    budget = (
+        db.query(models.Budget).filter(models.Budget.user_id == current_user.id).first()
+    )
+
     check_existence(budget, f"Budget not set")
     check_deleted(budget)
 
@@ -43,12 +53,16 @@ def create_budget(
         db.query(models.Budget)
         .filter(
             models.Budget.user_id == current_user.id,
-            models.Budget.deleted_at.is_(None), # Exclude soft-deleted budgets
+            models.Budget.deleted_at.is_(None),  # Exclude soft-deleted budgets
         )
         .first()
     )
-    
-    check_existence(existing_budget, custom_message=f"User with id: {current_user.id} already has a budget", expect_existence=True)
+
+    check_existence(
+        existing_budget,
+        custom_message=f"User with id: {current_user.id} already has a budget",
+        expect_existence=True,
+    )
 
     # # Check if the user exists
     # Not needed due to authentication
@@ -58,7 +72,7 @@ def create_budget(
     #         status_code=status.HTTP_404_NOT_FOUND,
     #         detail=f"User with id: {budget.user_id} does not exist",
     #     )
-        
+
     # Try to reactivate a soft-deleted budget
     soft_deleted_budget = reactivate_soft_deleted_budget(
         db, current_user.id, budget.model_dump()
@@ -66,7 +80,6 @@ def create_budget(
     if soft_deleted_budget:
         return soft_deleted_budget
 
-    
     # Create a new budget if all checks pass
     new_budget_data = {**budget.model_dump(), "user_id": current_user.id}
     new_budget = models.Budget(**new_budget_data)
@@ -84,16 +97,12 @@ def update_budget(
     current_user: int = Depends(oauth2.get_current_user),
 ):
     # Check if budget exists
-    budget_query = (
-        db.query(models.Budget)
-        .filter(
-            models.Budget.user_id == current_user.id
-        )
+    budget_query = db.query(models.Budget).filter(
+        models.Budget.user_id == current_user.id
     )
     existing_budget = budget_query.first()
 
     check_deleted(existing_budget)
-        
 
     existing_budget.updated_at = func.now()
     budget_query.update(budget.model_dump(), synchronize_session=False)
@@ -111,7 +120,7 @@ def delete_budget(
     # Check if budget exists
     budget_query = get_budget_query_by_id(db, current_user.id)
     existing_budget = budget_query.first()
-    
+
     check_existence(existing_budget, f"Budget for user {current_user.id} not found")
 
     # Check if budget has already been deleted
@@ -122,4 +131,3 @@ def delete_budget(
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-

@@ -1,10 +1,17 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.utils import get_user_budget, get_category_by_id, get_user_category
+from app.utils import (
+    check_deleted,
+    check_existence,
+    check_ownership,
+    get_user_budget,
+    get_category_by_id,
+    get_user_category,
+)
 
 from .. import models, oauth2, schemas
 from ..database import get_db
@@ -15,7 +22,7 @@ router = APIRouter(prefix="/category", tags=["Categories"])
 # testing purposes
 @router.get("/all", response_model=List[schemas.CategoryOut])
 def get_all_categories(db: Session = Depends(get_db)):
-    
+
     categories = db.query(models.Category).all()
     return categories
 
@@ -26,11 +33,10 @@ def get_categories(
 ):
     existing_budget = get_user_budget(db, current_user.id)
 
-    if not existing_budget:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with id {current_user.id} does not have a budget",
-        )
+    check_existence(
+        existing_budget,
+        custom_message=f"User with id {current_user.id} does not have a budget",
+    )
 
     categories = (
         db.query(models.Category)
@@ -41,10 +47,7 @@ def get_categories(
         .all()
     )
 
-    if not categories:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="No set categories"
-        )
+    check_existence(categories, custom_message="No set categories")
 
     return categories
 
@@ -59,11 +62,8 @@ def create_category(
 ):
     existing_budget = get_user_budget(db, current_user.id)
 
-    if not existing_budget or existing_budget.deleted_at:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with id {current_user.id} does not have a budget",
-        )
+    check_existence(existing_budget, "Budget not found")
+    check_deleted(existing_budget)
 
     category_data = {
         **category_create.model_dump(),
@@ -87,11 +87,9 @@ def update_category(
 ):
     existing_category = get_user_category(db, current_user.id, id)
 
-    if not existing_category or existing_category.deleted_at:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Category with id {id} not found",
-        )
+    check_existence(existing_category, f"Category id {id} not found")
+    check_deleted(existing_category)
+    check_ownership(existing_category, current_user.id)
 
     existing_category.updated_at = func.now()
     existing_category.user_id = current_user.id
@@ -113,23 +111,9 @@ def delete_category(
 ):
     existing_category = get_category_by_id(db, id)
 
-    if not existing_category:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Category with id {id} not found",
-        )
-
-    if existing_category.budget.owner.id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authorized",
-        )
-
-    if existing_category.deleted_at:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Category with id {id} has already been deleted",
-        )
+    check_existence(existing_category, f"Category id {id} not found")
+    check_deleted(existing_category)
+    check_ownership(existing_category, current_user.id)
 
     existing_category.deleted_at = func.now()
     db.commit()

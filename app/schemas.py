@@ -6,8 +6,10 @@ from pydantic import BaseModel, EmailStr
 class UserBase(BaseModel):
     email: EmailStr
 
+
 class UserCreate(UserBase, BaseModel):
     password: str
+
 
 class UserOut(UserBase, BaseModel):
     id: int
@@ -15,13 +17,15 @@ class UserOut(UserBase, BaseModel):
 
     class Config:
         from_attributes = True
-        
-        
+
+
 class BudgetBase(BaseModel):
     id: int
-            
+
+
 class BudgetCreate(BaseModel):
     amount: int
+
 
 class BudgetOut(BudgetCreate, BaseModel):
     id: int
@@ -30,27 +34,30 @@ class BudgetOut(BudgetCreate, BaseModel):
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
     owner: UserOut
-    
+
+
 class BudgetUpdate(BaseModel):
     amount: int
-    
+
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
-    
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
 
+
 class TokenData(BaseModel):
     id: Optional[int] = None
-    
-    
+
 
 class CategoryCreate(BaseModel):
     name: str
     amount: int
+
 
 class CategoryOut(CategoryCreate, BaseModel):
     id: int
@@ -59,17 +66,19 @@ class CategoryOut(CategoryCreate, BaseModel):
     deleted_at: Optional[datetime]
     budget_id: int
     budget: BudgetOut
-    
+
     class Config:
         from_attributes = True
 
-class CategoryUpdate(CategoryCreate, BaseModel):
-    ...
-    
+
+class CategoryUpdate(CategoryCreate, BaseModel): ...
+
+
 class TransactionCreate(BaseModel):
     amount: int
     note: str
     category_id: int
+
 
 class TransactionOut(TransactionCreate, BaseModel):
     id: int
@@ -78,6 +87,6 @@ class TransactionOut(TransactionCreate, BaseModel):
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
     category: Optional[CategoryOut]
-    
-class TransactionUpdate(TransactionCreate, BaseModel):
-    ...
+
+
+class TransactionUpdate(TransactionCreate, BaseModel): ...
