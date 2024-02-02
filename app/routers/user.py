@@ -1,5 +1,7 @@
-from .. import models, schemas, utils
-from fastapi import Depends, HTTPException, status, APIRouter
+from app import oauth2
+from .. import models, schemas
+from app.utils import check_deleted, check_existence, check_ownership
+from fastapi import Depends, status, APIRouter
 from ..database import get_db
 from sqlalchemy.orm import Session
 
@@ -22,13 +24,11 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 
-@router.get("/{id}", response_model=schemas.UserOut)
-def get_user(id: int, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.id == id).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with id: {id} does not exist",
-        )
+@router.get("/", response_model=schemas.UserOut)
+def get_user (db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
+    
+    user = (db.query(models.User).filter(models.User.id == current_user.id).first())    
+    check_existence(user, custom_message=f"User with id: {id} does not exist")
+    check_deleted(user)
 
     return user
