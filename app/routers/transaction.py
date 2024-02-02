@@ -9,7 +9,7 @@ from app.utils import (
     check_existence,
     check_ownership,
     get_transaction_by_id,
-    get_user_budget
+    get_user_budget,
 )
 
 from .. import models, oauth2, schemas

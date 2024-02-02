@@ -86,7 +86,7 @@ def update_category(
     current_user: int = Depends(oauth2.get_current_user),
 ):
     existing_category = get_user_category(db, current_user.id, id)
-    
+
     check_ownership(existing_category, current_user.id)
     check_existence(existing_category, f"Category id {id} not found")
     check_deleted(existing_category)
@@ -110,8 +110,8 @@ def delete_category(
     current_user: int = Depends(oauth2.get_current_user),
 ):
     existing_category = get_category_by_id(db, id)
-    check_ownership(existing_category, current_user.id)  
-    check_deleted(existing_category)  
+    check_ownership(existing_category, current_user.id)
+    check_deleted(existing_category)
     check_existence(existing_category, f"Category id {id} not found")
 
     existing_category.deleted_at = func.now()

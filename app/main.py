@@ -4,9 +4,8 @@ from . import models
 from .database import engine
 from .routers import user, budget, auth, category, transaction
 from fastapi import FastAPI
-from .config import settings
 
-models.Base.metadata.create_all(bind=engine)
+# models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 

@@ -170,7 +170,7 @@ def get_user_transaction(db: Session, user_id: int, transaction_id: int):
 
     Output:
         models.Transaction: The user-specific transaction if found, otherwise None.
-        
+
     Note:
         The function performs a query to retrieve a transaction associated with a specific user
         by joining the Transaction, Category, Budget, and User models. It ensures that the
@@ -191,14 +191,18 @@ def get_user_transaction(db: Session, user_id: int, transaction_id: int):
     )
 
 
-
-def check_existence(obj, custom_message: str = None, expect_existence: bool = False, custom_status_code: int = None):
+def check_existence(
+    obj,
+    custom_message: str = None,
+    expect_existence: bool = False,
+    custom_status_code: int = None,
+):
     """
     Checks the existence of an object and raises an HTTPException if the expectation is not met.
 
     Input:
         obj: The object whose existence is being checked.
-        custom_message (str, optional): A custom message to be used in the HTTPException. 
+        custom_message (str, optional): A custom message to be used in the HTTPException.
             If not provided, a default message based on the object type and the expectation is used.
         expect_existence (bool, optional): If True, the function expects the object to exist,
             raising an HTTPException with a 400 status code if it does. If False, it expects the object not to exist,
@@ -214,18 +218,21 @@ def check_existence(obj, custom_message: str = None, expect_existence: bool = Fa
             status code and detail message.
     """
     if expect_existence and obj:
-        detail_message = custom_message if custom_message else f"{type(obj).__name__} already exists"
+        detail_message = (
+            custom_message if custom_message else f"{type(obj).__name__} already exists"
+        )
         raise HTTPException(
             status_code=custom_status_code or status.HTTP_400_BAD_REQUEST,
             detail=detail_message,
         )
     elif not expect_existence and not obj:
-        detail_message = custom_message if custom_message else f"{type(obj).__name__} not found"
+        detail_message = (
+            custom_message if custom_message else f"{type(obj).__name__} not found"
+        )
         raise HTTPException(
             status_code=custom_status_code or status.HTTP_404_NOT_FOUND,
             detail=detail_message,
         )
-
 
 
 def check_deleted(obj):
@@ -276,7 +283,11 @@ def check_ownership(obj, current_user_id: int):
             detail="Not authorized",
         )
 
-    if hasattr(obj, "category") and hasattr(obj.category, "budget") and obj.category.budget.owner.id != current_user_id:
+    if (
+        hasattr(obj, "category")
+        and hasattr(obj.category, "budget")
+        and obj.category.budget.owner.id != current_user_id
+    ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authorized",
