@@ -160,7 +160,22 @@ def get_transaction_by_id(db: Session, transaction_id: int):
 
 
 def get_user_transaction(db: Session, user_id: int, transaction_id: int):
+    """
+    Retrieves a user-specific transaction from the database based on user and transaction IDs.
 
+    Input:
+        db (Session): SQLAlchemy database session.
+        user_id (int): Unique identifier of the user who owns the transaction.
+        transaction_id (int): Unique identifier of the transaction to retrieve.
+
+    Output:
+        models.Transaction: The user-specific transaction if found, otherwise None.
+        
+    Note:
+        The function performs a query to retrieve a transaction associated with a specific user
+        by joining the Transaction, Category, Budget, and User models. It ensures that the
+        transaction is not deleted and belongs to the specified user.
+    """
     return (
         db.query(models.Transaction)
         .join(models.Category)
@@ -178,6 +193,26 @@ def get_user_transaction(db: Session, user_id: int, transaction_id: int):
 
 
 def check_existence(obj, custom_message: str = None, expect_existence: bool = False, custom_status_code: int = None):
+    """
+    Checks the existence of an object and raises an HTTPException if the expectation is not met.
+
+    Input:
+        obj: The object whose existence is being checked.
+        custom_message (str, optional): A custom message to be used in the HTTPException. 
+            If not provided, a default message based on the object type and the expectation is used.
+        expect_existence (bool, optional): If True, the function expects the object to exist,
+            raising an HTTPException with a 400 status code if it does. If False, it expects the object not to exist,
+            raising an HTTPException with a 404 status code if it does.
+        custom_status_code (int, optional): A custom HTTP status code to be used in the HTTPException.
+            If not provided, the default status codes (400 for existence, 404 for non-existence) are used.
+
+    Output:
+        None
+
+    Raises:
+        HTTPException: If the expectation is not met, an HTTPException is raised with the specified or default
+            status code and detail message.
+    """
     if expect_existence and obj:
         detail_message = custom_message if custom_message else f"{type(obj).__name__} already exists"
         raise HTTPException(
@@ -194,6 +229,19 @@ def check_existence(obj, custom_message: str = None, expect_existence: bool = Fa
 
 
 def check_deleted(obj):
+    """
+    Checks if an object has been marked as deleted and raises an HTTPException if true.
+
+    Input:
+        obj: The object to check for deletion status.
+
+    Output:
+        None
+
+    Raises:
+        HTTPException: If the object is marked as deleted, an HTTPException is raised with a 404 status code
+            and a detail message indicating that the object has been deleted.
+    """
     if hasattr(obj, "deleted_at") and obj.deleted_at:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -202,7 +250,33 @@ def check_deleted(obj):
 
 
 def check_ownership(obj, current_user_id: int):
+    """
+    Checks if the current user owns the specified object's associated object and raises an HTTPException if not authorized.
+
+    Input:
+        obj: The object for which ownership is being checked.
+        current_user_id (int): The unique identifier of the current user.
+
+    Output:
+        None
+
+    Raises:
+        HTTPException: If the current user does not own the associated budget, an HTTPException is raised with
+            a 401 status code and a detail message indicating unauthorized access.
+    """
     if hasattr(obj, "budget") and obj.budget.owner.id != current_user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authorized",
+        )
+
+    if hasattr(obj, "category") and obj.category.budget.owner.id != current_user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authorized",
+        )
+
+    if hasattr(obj, "category") and hasattr(obj.category, "budget") and obj.category.budget.owner.id != current_user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authorized",
