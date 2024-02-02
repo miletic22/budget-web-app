@@ -1,8 +1,9 @@
 # utils.py
 
+from fastapi import HTTPException, status
 from . import models
 from passlib.context import CryptContext
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 
 
@@ -135,4 +136,58 @@ def get_user_category(db: Session, user_id: int, category_id: int):
             models.Category.deleted_at.is_(None),
         )
         .first()
-    ) 
+    )
+    
+    
+def get_transaction_by_id(db: Session, transaction_id: int):
+    """
+    Retrieves a transaction from the database based on its ID.
+
+    Input:
+        db (Session): SQLAlchemy database session.
+        category_id (int): Unique identifier of the transaction to retrieve.
+
+    Output:
+        models.Transaction: The transaction if found, otherwise None.
+    """
+    return db.query(models.Transaction).filter(models.Transaction.id == transaction_id).first()
+
+
+def get_user_transaction(db: Session, user_id: int, transaction_id: int):
+
+    return (
+        db.query(models.Transaction)
+        .join(models.Category)
+        .join(models.Budget)
+        .join(models.User)
+        .filter(
+            models.Transaction.id == transaction_id,
+            models.Category.budget_id == models.Budget.id,
+            models.Budget.user_id == user_id,
+            models.Transaction.deleted_at.is_(None),
+        )
+        .first()
+    )
+
+def check_existence(obj, custom_message: str = None):
+    if not obj:
+        detail_message = custom_message if custom_message else f"{type(obj).__name__} not found"
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=detail_message,
+        )
+
+
+def check_deleted(obj):
+    if hasattr(obj, 'deleted_at') and obj.deleted_at:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"{type(obj).__name__} is deleted",
+        )
+
+def check_ownership(obj, current_user_id: int):
+    if hasattr(obj, 'budget') and obj.budget.owner.id != current_user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authorized",
+        )

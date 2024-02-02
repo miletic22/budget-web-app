@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -9,14 +9,13 @@ from app.utils import get_user_budget, get_category_by_id, get_user_category
 from .. import models, oauth2, schemas
 from ..database import get_db
 
-router = APIRouter(prefix="/categories", tags=["Categories"])
+router = APIRouter(prefix="/category", tags=["Categories"])
 
 
-
+# testing purposes
 @router.get("/all", response_model=List[schemas.CategoryOut])
-def get_all_categories(
-    db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)
-):
+def get_all_categories(db: Session = Depends(get_db)):
+    
     categories = db.query(models.Category).all()
     return categories
 

@@ -65,3 +65,19 @@ class CategoryOut(CategoryCreate, BaseModel):
 
 class CategoryUpdate(CategoryCreate, BaseModel):
     ...
+    
+class TransactionCreate(BaseModel):
+    amount: int
+    note: str
+    category_id: int
+
+class TransactionOut(TransactionCreate, BaseModel):
+    id: int
+    category_id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
+    deleted_at: Optional[datetime]
+    category: Optional[CategoryOut]
+    
+class TransactionUpdate(TransactionCreate, BaseModel):
+    ...

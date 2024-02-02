@@ -1,5 +1,6 @@
 from sqlalchemy import (
     Column,
+    Float,
     Integer,
     String,
     TIMESTAMP,
@@ -72,7 +73,7 @@ class Transaction(Base):
     updated_at = Column(TIMESTAMP(timezone=True), nullable=True)
     deleted_at = Column(TIMESTAMP(timezone=True), nullable=True)
 
-    amount = Column(Integer)
-    note = Column(String(120))
+    amount = Column(Float)
+    note = Column(String)
 
     category_id = Column(Integer, ForeignKey("categories.id"))
