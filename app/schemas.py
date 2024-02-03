@@ -89,4 +89,7 @@ class TransactionOut(TransactionCreate, BaseModel):
     category: Optional[CategoryOut]
 
 
-class TransactionUpdate(TransactionCreate, BaseModel): ...
+class TransactionUpdate(BaseModel): 
+    amount: int
+    note: str
+    

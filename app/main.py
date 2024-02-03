@@ -1,7 +1,5 @@
 # https://www.youtube.com/watch?v=0sOvCWFmrtA&t=31862s
 
-from . import models
-from .database import engine
 from .routers import user, budget, auth, category, transaction
 from fastapi import FastAPI
 
