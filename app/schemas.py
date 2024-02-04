@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional
+
 from pydantic import BaseModel, EmailStr
 
 
@@ -33,8 +34,6 @@ class BudgetOut(BudgetCreate, BaseModel):
     created_at: datetime
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
-    owner: UserOut
-
 
 class BudgetUpdate(BaseModel):
     amount: int
@@ -65,7 +64,6 @@ class CategoryOut(CategoryCreate, BaseModel):
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
     budget_id: int
-    budget: BudgetOut
 
     class Config:
         from_attributes = True
@@ -86,10 +84,21 @@ class TransactionOut(TransactionCreate, BaseModel):
     created_at: datetime
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
-    category: Optional[CategoryOut]
 
 
 class TransactionUpdate(BaseModel): 
     amount: int
     note: str
     
+class UserDataOut(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+    updated_at: datetime
+
+    BudgetOut
+    CategoryOut
+    TransactionOut
+
+    class Config:
+        from_attributes = True

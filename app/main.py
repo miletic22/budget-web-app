@@ -1,7 +1,8 @@
-# https://www.youtube.com/watch?v=0sOvCWFmrtA&t=31862s
+# https://youtu.be/0sOvCWFmrtA?si=EAkG_V_jVuxRmz_B&t=40468
 
-from .routers import user, budget, auth, category, transaction
 from fastapi import FastAPI
+
+from .routers import auth, budget, category, transaction, user
 
 # models.Base.metadata.create_all(bind=engine)
 

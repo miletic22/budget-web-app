@@ -1,7 +1,8 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 import os
+
+from flask import Flask
 from flask_login import LoginManager
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 DB_NAME = "budget-tracker.db"
@@ -17,7 +18,7 @@ def create_app():
 
     app.register_blueprint(views, url_prefix="/")
 
-    from .models import User, Budget, Category, Transaction
+    from .models import Budget, Category, Transaction, User
 
     create_database(app)
 

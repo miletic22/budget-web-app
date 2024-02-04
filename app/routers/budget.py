@@ -4,12 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.utils import (
-    check_deleted,
-    check_existence,
-    get_budget_query_by_id,
-    reactivate_soft_deleted_budget,
-)
+from app.utils import (check_deleted, check_existence, get_budget_query_by_id,
+                       reactivate_soft_deleted_budget)
 
 from .. import models, oauth2, schemas
 from ..database import get_db

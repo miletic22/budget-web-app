@@ -1,11 +1,11 @@
 # utils.py
 
 from fastapi import HTTPException, status
-from . import models
 from passlib.context import CryptContext
-from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
+from sqlalchemy.orm import Session, joinedload
 
+from . import models
 
 # Create a password context for hashing passwords
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

@@ -4,14 +4,8 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.utils import (
-    check_deleted,
-    check_existence,
-    check_ownership,
-    get_user_budget,
-    get_category_by_id,
-    get_user_category,
-)
+from app.utils import (check_deleted, check_existence, check_ownership,
+                       get_category_by_id, get_user_budget, get_user_category)
 
 from .. import models, oauth2, schemas
 from ..database import get_db
