@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 
 from app import oauth2, utils
-from app.routers import budget, category, transaction
 from app.utils import check_deleted, check_existence
 
 from .. import models, schemas

@@ -4,28 +4,15 @@ from jose import jwt
 from app import schemas
 from app.config import settings
 
-from .database import client, session  # noqa: F401
-
-
-@pytest.fixture
-def test_user(client):
-    user_data = {"email": "test@gmail.com", "password": "password"}
-    response = client.post("/users/", json=user_data)
-
-    assert response.status_code == 201
-
-    new_user = response.json()
-    new_user["password"] = user_data["password"]
-    return new_user
-
 
 def test_create_user(client):
     response = client.post(
-        "/users/", json={"email": "test1@gmail.com", "password": "password"}
+        "/users/",
+        json={"email": "correct_user@gmail.com", "password": "correct_password"},
     )
 
     new_user = schemas.UserOut(**response.json())
-    assert new_user.email == "test1@gmail.com"
+    assert new_user.email == "correct_user@gmail.com"
     assert response.status_code == 201
 
 
@@ -44,3 +31,20 @@ def test_user_login(test_user, client):
     assert login_res.token_type == "bearer"
     assert response.status_code == 200
 
+
+@pytest.mark.parametrize(
+    # fmt: off
+    "email, password, status_code",
+    [
+        ("correct_user@gmail.com", "wrong_password", 401),
+        ("wrong_user@gmail.com", "correct_password", 401),
+        (None, "correct_password", 422),
+        ("correct_user@gmail.com", None, 422),
+        (None, None, 422),
+    ],
+    # fmt: on
+)
+def test_incorrect_login(test_user, client, email, password, status_code):
+    response = client.post("/login", data={"username": email, "password": password})
+
+    assert response.status_code == status_code
