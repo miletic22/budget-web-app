@@ -43,7 +43,7 @@ def client(session):
 
 @pytest.fixture
 def test_user(client):
-    user_data = {"email": "test@gmail.com", "password": "password"}
+    user_data = {"email": "correct_user@gmail.com", "password": "correct_password"}
     response = client.post("/users/", json=user_data)
 
     assert response.status_code == 201
@@ -52,14 +52,47 @@ def test_user(client):
     new_user["password"] = user_data["password"]
     return new_user
 
+@pytest.fixture
+def multiple_test_users(client):
+    users = [
+        {"email": "test1@gmail.com", "password": "password1"},
+        {"email": "test2@gmail.com", "password": "password2"},
+        {"email": "test3@gmail.com", "password": "password3"},
+    ]
+    
+    created_users = []
+
+    for user_data in users:
+        response = client.post("/users/", json=user_data)
+        assert response.status_code == 201
+        new_user = response.json()
+        new_user["password"] = user_data["password"]
+        created_users.append(new_user)
+
+    return created_users
+
 
 @pytest.fixture
 def token(test_user):
-    return create_access_token({"user_id": test_user["id"]})
+    return create_access_token({"user_id": test_user['id']})
+
+@pytest.fixture
+def multiple_tokens(test_users):
+    return [create_access_token({"user_id": user["id"]}) for user in test_users]
 
 
 @pytest.fixture
 def authorized_client(client, token):
     client.headers = {**client.headers, "Authorization": f"Bearer {token}"}
-
     return client
+
+@pytest.fixture
+def multiple_authorized_clients(client, tokens):
+    clients = []
+
+    for token in tokens:
+        headers = {"Authorization": f"Bearer {token}"}
+        client_with_token = client.__class__(base_url=client.base_url, headers=headers)
+        clients.append(client_with_token)
+
+    return clients
