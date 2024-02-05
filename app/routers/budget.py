@@ -109,6 +109,11 @@ def update_budget(
 
     check_deleted(existing_budget)
 
+    if budget.amount < 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Budget amount cannot be negative"
+        )
     existing_budget.updated_at = func.now()
     budget_query.update(budget.model_dump(), synchronize_session=False)
 
