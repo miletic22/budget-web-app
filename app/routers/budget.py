@@ -16,8 +16,7 @@ router = APIRouter(prefix="/budgets", tags=["Budgets"])
 # for easier testing purposes
 @router.get("/all", response_model=List[schemas.BudgetOut])
 def get_all_budgets(
-    db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)
-):
+    db: Session = Depends(get_db),):
     # Filter budgets no matter if they were soft-deleted
     budgets = db.query(models.Budget).all()
     return budgets
@@ -32,7 +31,7 @@ def get_budget(
         db.query(models.Budget).filter(models.Budget.user_id == current_user.id).first()
     )
 
-    check_existence(budget, f"Budget not set")
+    check_existence(budget, "Budget not set")
     check_deleted(budget)
 
     return budget
@@ -53,7 +52,7 @@ def create_budget(
         )
         .first()
     )
-
+    
     check_existence(
         existing_budget,
         custom_message=f"User with id: {current_user.id} already has a budget",
@@ -75,7 +74,12 @@ def create_budget(
     )
     if soft_deleted_budget:
         return soft_deleted_budget
-
+    
+    if budget.amount < 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Budget amount cannot be negative"
+        )
     # Create a new budget if all checks pass
     new_budget_data = {**budget.model_dump(), "user_id": current_user.id}
     new_budget = models.Budget(**new_budget_data)
