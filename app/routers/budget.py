@@ -100,6 +100,11 @@ def update_budget(
     budget_query = db.query(models.Budget).filter(
         models.Budget.user_id == current_user.id
     )
+    
+    check_existence(
+        budget_query.first(),
+        custom_message="Budget not set"
+    )
     existing_budget = budget_query.first()
 
     check_deleted(existing_budget)
