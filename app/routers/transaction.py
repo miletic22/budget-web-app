@@ -70,6 +70,7 @@ def create_transaction(
 
     check_existence(existing_category, "Category does not exist")
     check_existence(existing_budget, "Budget does not exist")
+    check_deleted(existing_category)
     check_deleted(existing_budget)
 
     transaction_data = {
