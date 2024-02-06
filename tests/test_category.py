@@ -201,14 +201,14 @@ def test_delete_category_success(authorized_client, test_categories):
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
 
-def test_delete_deleted_budget(authorized_client, test_deleted_at_category):
+def test_deleted_category_delete_category (authorized_client, test_deleted_at_category):
     delete_url = f"/category/{test_deleted_at_category.id}"
 
     response = authorized_client.delete(delete_url)
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_delete_nonexistant_budget(authorized_client):
+def test_nonexistant_category_delete_category (authorized_client):
     nonexistent_category_id = random.randint(1000, 100000)
     delete_url = f"/category/{nonexistent_category_id}"
     response = authorized_client.delete(delete_url)
