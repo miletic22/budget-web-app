@@ -66,7 +66,9 @@ def create_transaction(
     current_user: int = Depends(oauth2.get_current_user),
 ):
     existing_budget = get_user_budget(db, current_user.id)
+    existing_category = db.query(models.Category).filter(models.Category.id == transaction_create.category_id).first()
 
+    check_existence(existing_category, "Category does not exist")
     check_existence(existing_budget, "Budget does not exist")
     check_deleted(existing_budget)
 
