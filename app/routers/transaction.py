@@ -104,6 +104,12 @@ def update_transaction(
     check_deleted(existing_transaction)
     check_ownership(existing_transaction, current_user.id)
 
+    if transaction.amount < 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Transaction amount cannot be negative"
+        )
+
     existing_transaction.updated_at = func.now()
     existing_transaction.user_id = current_user.id
 
