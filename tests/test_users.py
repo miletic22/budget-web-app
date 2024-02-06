@@ -4,8 +4,10 @@ from jose import jwt
 from app import schemas
 from app.config import settings
 
+from fastapi import status
 
-def test_create_user(client):
+
+def test_create_user_success(client):
     response = client.post(
         "/users/",
         json={"email": "correct_user@gmail.com", "password": "correct_password"},
@@ -16,7 +18,7 @@ def test_create_user(client):
     assert response.status_code == 201
 
 
-def test_user_login(test_user, client):
+def test_user_login_success(test_user, client):
     response = client.post(
         "/login", data={"username": test_user['email'], "password": test_user['password']})
     login_res = schemas.Token(**response.json())
@@ -25,7 +27,7 @@ def test_user_login(test_user, client):
     id = payload.get("user_id")
     assert id == test_user['id']
     assert login_res.token_type == "bearer"
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.parametrize(

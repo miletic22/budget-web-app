@@ -33,7 +33,7 @@ def test_unauthorized_get_budget(client):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_get_budget(authorized_client, test_budget):
+def test_get_budget_success(authorized_client, test_budget):
     response = authorized_client.get("/budgets/")
     budget = schemas.BudgetOut(**response.json())
     assert budget.id == test_budget.id
@@ -61,7 +61,7 @@ def test_authorized_client(): ...
         (0, status.HTTP_201_CREATED),
     ],
 )
-def test_create_budget(authorized_client, amount, status_code):
+def test_create_budget_success(authorized_client, amount, status_code):
     response = authorized_client.post("/budgets/", json={"amount": amount})
     created_budget = schemas.BudgetCreate(**response.json())
     assert created_budget.amount == int(amount)
@@ -109,7 +109,7 @@ def test_create_existing_budget(authorized_client, test_budget):
 # update_budget testing
 
 
-def test_update_budget(authorized_client, test_budget):
+def test_update_budget_success(authorized_client, test_budget):
     data = {
         "amount": 9999,
     }
@@ -153,7 +153,7 @@ def test_update_negative_budget(authorized_client, test_budget):
 
 # delete_budget testing
 
-def test_delete_budget(authorized_client, test_budget):
+def test_delete_budget_success(authorized_client, test_budget):
     response = authorized_client.delete("/budgets/")
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
