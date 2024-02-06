@@ -94,10 +94,10 @@ def test_create_budget_with_deleted_budget(
     assert response.status_code == status.HTTP_201_CREATED
 
 
-
 def test_create_negative_budget(authorized_client):
     response = authorized_client.post("/budgets/", json={"amount": -100})
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
 
 def test_create_existing_budget(authorized_client, test_budget):
     budget_data = {"amount": test_budget.amount, "user_id": test_budget.user_id}
@@ -120,28 +120,31 @@ def test_update_budget_success(authorized_client, test_budget):
     assert updated_budget.amount == data["amount"]
     assert response.status_code == status.HTTP_200_OK
 
+
 def test_unauthorized_update_budget(client):
     response = client.put("/budgets/")
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
+
 def test_update_deleted_budget(authorized_client, test_deleted_at_budget):
-    
+
     data = {
         "amount": 9999,
     }
-    
+
     assert test_deleted_at_budget.deleted_at is not None
     response = authorized_client.put("/budgets/", json=data)
-    
+
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json().get("detail") == "Budget is deleted"
 
-def test_update_nonexistant_budget (authorized_client):
+
+def test_update_nonexistant_budget(authorized_client):
     data = {
         "amount": 9999,
     }
     response = authorized_client.put("/budgets/", json=data)
-    
+
     assert response.status_code == status.HTTP_404_NOT_FOUND
     assert response.json().get("detail") == "Budget not set"
 
@@ -149,18 +152,21 @@ def test_update_nonexistant_budget (authorized_client):
 def test_update_negative_budget(authorized_client, test_budget):
     response = authorized_client.put("/budgets/", json={"amount": -100})
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
-    
+
 
 # delete_budget testing
+
 
 def test_delete_budget_success(authorized_client, test_budget):
     response = authorized_client.delete("/budgets/")
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
+
 def test_delete_deleted_budget(authorized_client, test_deleted_at_budget):
     response = authorized_client.delete("/budgets/")
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
-def test_delete_nonexistant_budget (authorized_client):
+
+def test_delete_nonexistant_budget(authorized_client):
     response = authorized_client.delete("/budgets/")
     assert response.status_code == status.HTTP_404_NOT_FOUND

@@ -52,6 +52,7 @@ def test_user(client):
     new_user["password"] = user_data["password"]
     return new_user
 
+
 # @pytest.fixture
 # def multiple_test_users(client):
 #     users = [
@@ -59,7 +60,7 @@ def test_user(client):
 #         {"email": "test2@gmail.com", "password": "password2"},
 #         {"email": "test3@gmail.com", "password": "password3"},
 #     ]
-    
+
 #     created_users = []
 
 #     for user_data in users:
@@ -74,7 +75,8 @@ def test_user(client):
 
 @pytest.fixture
 def token(test_user):
-    return create_access_token({"user_id": test_user['id']})
+    return create_access_token({"user_id": test_user["id"]})
+
 
 # @pytest.fixture
 # def multiple_tokens(test_users):
@@ -85,6 +87,7 @@ def token(test_user):
 def authorized_client(client, token):
     client.headers = {**client.headers, "Authorization": f"Bearer {token}"}
     return client
+
 
 # @pytest.fixture
 # def multiple_authorized_clients(client, tokens):
