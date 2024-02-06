@@ -87,9 +87,17 @@ def update_category(
 ):
     existing_category = get_user_category(db, current_user.id, id)
 
+
+
     check_ownership(existing_category, current_user.id)
     check_existence(existing_category, f"Category id {id} not found")
     check_deleted(existing_category)
+    
+    if category.amount < 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Category amount cannot be negative"
+        )
 
     existing_category.updated_at = func.now()
     existing_category.user_id = current_user.id
