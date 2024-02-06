@@ -25,21 +25,18 @@ def get_all_transactions(db: Session = Depends(get_db)):
 def get_transactions(
     db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)
 ):
-    existing_budget = get_user_budget(db, current_user.id)
-
     transactions = (
         db.query(models.Transaction)
-        .join(models.Category, models.Category.id == models.Transaction.category_id)
-        .join(models.Budget, models.Budget.id == models.Category.budget_id)
+        .join(models.Category, models.Transaction.category_id == models.Category.id)
+        .join(models.Budget, models.Category.budget_id == models.Budget.id)
+        .join(models.User, models.Budget.user_id == models.User.id)
         .filter(
-            models.Budget.user_id == current_user.id,
-            models.Budget.deleted_at.is_(None),
+            models.User.id == current_user.id,
             models.Transaction.deleted_at.is_(None),
-        )
+)
         .all()
     )
 
-    check_existence(existing_budget, "Budget does not exist")
     check_existence(transactions, "No set transactions")
 
     return transactions
