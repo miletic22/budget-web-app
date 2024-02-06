@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -72,6 +72,12 @@ def create_transaction(
     check_existence(existing_budget, "Budget does not exist")
     check_deleted(existing_category)
     check_deleted(existing_budget)
+
+    if transaction_create.amount < 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Transaction amount cannot be negative"
+        )
 
     transaction_data = {
         **transaction_create.model_dump(),
