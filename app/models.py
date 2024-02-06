@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import (TIMESTAMP, Column, Float, ForeignKey, Integer, String,
-                        func)
+from sqlalchemy import TIMESTAMP, Column, Float, ForeignKey, Integer, String, func
 
 from .database import Base
 

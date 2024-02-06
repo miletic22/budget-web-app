@@ -35,6 +35,7 @@ class BudgetOut(BudgetCreate, BaseModel):
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
 
+
 class BudgetUpdate(BaseModel):
     amount: int
 
@@ -86,10 +87,11 @@ class TransactionOut(TransactionCreate, BaseModel):
     deleted_at: Optional[datetime]
 
 
-class TransactionUpdate(BaseModel): 
+class TransactionUpdate(BaseModel):
     amount: int
     note: str
-    
+
+
 class UserDataOut(BaseModel):
     id: int
     email: EmailStr

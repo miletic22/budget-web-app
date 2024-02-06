@@ -4,8 +4,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.utils import (check_deleted, check_existence, check_ownership,
-                       get_transaction_by_id, get_user_budget)
+from app.utils import (
+    check_deleted,
+    check_existence,
+    check_ownership,
+    get_transaction_by_id,
+    get_user_budget,
+)
 
 from .. import models, oauth2, schemas
 from ..database import get_db
@@ -33,7 +38,7 @@ def get_transactions(
         .filter(
             models.User.id == current_user.id,
             models.Transaction.deleted_at.is_(None),
-)
+        )
         .all()
     )
 
@@ -66,7 +71,11 @@ def create_transaction(
     current_user: int = Depends(oauth2.get_current_user),
 ):
     existing_budget = get_user_budget(db, current_user.id)
-    existing_category = db.query(models.Category).filter(models.Category.id == transaction_create.category_id).first()
+    existing_category = (
+        db.query(models.Category)
+        .filter(models.Category.id == transaction_create.category_id)
+        .first()
+    )
 
     check_existence(existing_category, "Category does not exist")
     check_existence(existing_budget, "Budget does not exist")
@@ -76,7 +85,7 @@ def create_transaction(
     if transaction_create.amount < 0:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Transaction amount cannot be negative"
+            detail="Transaction amount cannot be negative",
         )
 
     transaction_data = {
@@ -107,7 +116,7 @@ def update_transaction(
     if transaction.amount < 0:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Transaction amount cannot be negative"
+            detail="Transaction amount cannot be negative",
         )
 
     existing_transaction.updated_at = func.now()

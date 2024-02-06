@@ -4,8 +4,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.utils import (check_deleted, check_existence, check_ownership,
-                       get_category_by_id, get_user_budget, get_user_category)
+from app.utils import (
+    check_deleted,
+    check_existence,
+    check_ownership,
+    get_category_by_id,
+    get_user_budget,
+    get_user_category,
+)
 
 from .. import models, oauth2, schemas
 from ..database import get_db
@@ -58,11 +64,11 @@ def create_category(
 
     check_existence(existing_budget, "Budget not found")
     check_deleted(existing_budget)
-    
+
     if category_create.amount < 0:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Category amount cannot be negative"
+            detail="Category amount cannot be negative",
         )
 
     category_data = {
@@ -87,16 +93,14 @@ def update_category(
 ):
     existing_category = get_user_category(db, current_user.id, id)
 
-
-
     check_ownership(existing_category, current_user.id)
     check_existence(existing_category, f"Category id {id} not found")
     check_deleted(existing_category)
-    
+
     if category.amount < 0:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Category amount cannot be negative"
+            detail="Category amount cannot be negative",
         )
 
     existing_category.updated_at = func.now()
@@ -124,4 +128,3 @@ def delete_category(
 
     existing_category.deleted_at = func.now()
     db.commit()
-

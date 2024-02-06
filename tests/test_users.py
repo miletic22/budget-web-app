@@ -1,10 +1,9 @@
 import pytest
+from fastapi import status
 from jose import jwt
 
 from app import schemas
 from app.config import settings
-
-from fastapi import status
 
 
 def test_create_user_success(client):

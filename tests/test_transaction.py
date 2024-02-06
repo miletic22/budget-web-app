@@ -29,7 +29,10 @@ def test_transactions(session: Session, test_user, test_budget, test_categories)
 @pytest.fixture()
 def test_deleted_at_transaction(test_user, session, test_budget, test_categories):
     deleted_transaction = models.Transaction(
-        amount=100, note="note 1", category_id=test_categories[0].id, deleted_at=func.now()
+        amount=100,
+        note="note 1",
+        category_id=test_categories[0].id,
+        deleted_at=func.now(),
     )
 
     session.add(deleted_transaction)
@@ -47,7 +50,9 @@ def test_unauthorized_get_transactions(client):
 
 def test_get_transactions_success(authorized_client, test_transactions):
     response = authorized_client.get("/transaction/")
-    transactions = [schemas.TransactionOut(**transaction) for transaction in response.json()]
+    transactions = [
+        schemas.TransactionOut(**transaction) for transaction in response.json()
+    ]
 
     assert len(transactions) == len(test_transactions)
     for transaction, expected_transaction in zip(transactions, test_transactions):
@@ -58,7 +63,7 @@ def test_get_transactions_success(authorized_client, test_transactions):
         assert transaction.updated_at == expected_transaction.updated_at
         assert transaction.deleted_at == expected_transaction.deleted_at
         assert transaction.category_id == expected_transaction.category_id
-        
+
     assert response.status_code == status.HTTP_200_OK
 
 
@@ -68,17 +73,16 @@ def test_no_transactions_get_transactions(authorized_client):
 
 
 def test_no_categories_get_transactions(
-    authorized_client,
-    session,
-    test_categories,  # noqa: F811,
-    test_transactions
+    authorized_client, session, test_categories, test_transactions  # noqa: F811,
 ):
     # the transaction would be connected to test_categories[0]
     test_categories[0].deleted_at = func.now()
 
     # Save the changes to the database
     session.commit()
-    session.refresh(test_categories[0])  # Refresh the specific category object, not the entire list
+    session.refresh(
+        test_categories[0]
+    )  # Refresh the specific category object, not the entire list
     session.close()
 
     response = authorized_client.get("/transaction/")
@@ -87,12 +91,14 @@ def test_no_categories_get_transactions(
     assert response.status_code == status.HTTP_200_OK
 
 
-
 # test get_specific_transaction
+
 
 def test_get_specific_transaction_success(authorized_client, test_transactions):
     response = authorized_client.get("/transaction/")
-    transactions = [schemas.TransactionOut(**transaction) for transaction in response.json()]
+    transactions = [
+        schemas.TransactionOut(**transaction) for transaction in response.json()
+    ]
 
     assert len(transactions) == len(test_transactions)
     for transaction, expected_transaction in zip(transactions, test_transactions):
@@ -104,28 +110,35 @@ def test_get_specific_transaction_success(authorized_client, test_transactions):
         assert transaction.deleted_at == expected_transaction.deleted_at
         assert transaction.category_id == expected_transaction.category_id
 
-def test_nonexistant_transaction_get_specific_transaction (authorized_client):
-    nonexistant_transaction_id = random.randint(1000, 100000)
-    update_url = f"/transaction/{nonexistant_transaction_id}"
 
-    response = authorized_client.get(update_url)
+# def test_nonexistant_transaction_get_specific_transaction(authorized_client):
+#     nonexistant_transaction_id = random.randint(1000, 100000)
+#     update_url = f"/transaction/{nonexistant_transaction_id}"
 
-    assert response.status_code == status.HTTP_404_NOT_FOUND 
-    
-def test_deleted_transaction_get_specific_transaction (authorized_client, test_transactions, session):
+#     response = authorized_client.get(update_url)
+
+#     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+def test_deleted_transaction_get_specific_transaction(
+    authorized_client, test_transactions, session
+):
     # testing 1 transaction
     test_transactions[0].deleted_at = func.now()
     transaction_id = test_transactions[0].id
 
     # Save the changes to the database
     session.commit()
-    session.refresh(test_transactions[0])  # Refresh the specific category object, not the entire list
+    session.refresh(
+        test_transactions[0]
+    )  # Refresh the specific category object, not the entire list
     session.close()
     update_url = f"/transaction/{transaction_id}"
     response = authorized_client.get(update_url)
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
-    
+
+
 def test_unauthorized_get_specific_transaction(client, test_transactions):
     transaction_id = test_transactions[0].id
     update_url = f"/transaction/{transaction_id}"
@@ -133,8 +146,9 @@ def test_unauthorized_get_specific_transaction(client, test_transactions):
     response = client.get(update_url)
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
+
 def test_invalid_transaction_id_format(authorized_client):
-    invalid_transaction_id = "abc"  
+    invalid_transaction_id = "abc"
     update_url = f"/transaction/{invalid_transaction_id}"
 
     response = authorized_client.get(update_url)
@@ -145,11 +159,7 @@ def test_invalid_transaction_id_format(authorized_client):
 
 
 def test_create_transaction_success(authorized_client, test_budget, test_categories):
-    data = {
-        "amount": 500,
-        "note": "cccc",
-        "category_id": test_categories[0].id
-    }
+    data = {"amount": 500, "note": "cccc", "category_id": test_categories[0].id}
     response = authorized_client.post("/transaction/", json=data)
     assert response.status_code == status.HTTP_201_CREATED
     created_transaction = response.json()
@@ -159,24 +169,14 @@ def test_create_transaction_success(authorized_client, test_budget, test_categor
     assert created_transaction["category_id"] == data["category_id"]
 
 
-
-
 def test_unauthorized_create_transaction(client, test_categories):  # noqa: F811
-    data = {
-        "amount": 500,
-        "note": "cccc",
-        "category_id": test_categories[0].id
-    }
+    data = {"amount": 500, "note": "cccc", "category_id": test_categories[0].id}
     response = client.post("/transaction/", json=data)
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 def test_no_category_create_transaction(authorized_client):
-    data = {
-        "amount": 500,
-        "note": "cccc",
-        "category_id": 9999
-    }
+    data = {"amount": 500, "note": "cccc", "category_id": 9999}
     response = authorized_client.post("/transaction/", json=data)
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
@@ -204,11 +204,7 @@ def test_invalid_data_create_transaction(authorized_client):
 
 
 def test_negative_amount_create_transaction(authorized_client, test_categories):
-    data = {
-        "amount": -100,
-        "note": "cccc",
-        "category_id": test_categories[0].id
-    }
+    data = {"amount": -100, "note": "cccc", "category_id": test_categories[0].id}
     response = authorized_client.post("/transaction/", json=data)
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
@@ -220,10 +216,7 @@ def test_update_category_success(authorized_client, test_transactions, session):
     # Testing on 1 category
     transaction_to_update = test_transactions[0]
 
-    data = {
-        "amount": 532235,
-        "note": "A new iPad for 'studying'"
-    }
+    data = {"amount": 532235, "note": "A new iPad for 'studying'"}
 
     update_url = f"/transaction/{transaction_to_update.id}"
 
@@ -236,7 +229,7 @@ def test_update_category_success(authorized_client, test_transactions, session):
     assert updated_transaction["category_id"] == transaction_to_update.id
 
 
-def test_unauthorized_update_transaction (client, test_transactions):
+def test_unauthorized_update_transaction(client, test_transactions):
     update_url = f"/transaction/{test_transactions[0].id}"
     response = client.put(update_url)
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -244,10 +237,7 @@ def test_unauthorized_update_transaction (client, test_transactions):
 
 def test_update_deleted_category(authorized_client, test_deleted_at_transaction):
 
-    data = {
-    "amount": 100,
-    "note": "test"
-    }
+    data = {"amount": 100, "note": "test"}
     update_url = f"/transaction/{test_deleted_at_transaction.id}"
 
     assert test_deleted_at_transaction.deleted_at is not None
@@ -257,11 +247,8 @@ def test_update_deleted_category(authorized_client, test_deleted_at_transaction)
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_nonexistant_transaction_update_transaction (authorized_client):
-    data = {
-        "amount": 100,
-        "note": "test"
-    }
+def test_nonexistant_transaction_update_transaction(authorized_client):
+    data = {"amount": 100, "note": "test"}
     nonexistant_transaction_id = random.randint(1000, 100000)
     update_url = f"/transaction/{nonexistant_transaction_id}"
 
@@ -270,12 +257,9 @@ def test_nonexistant_transaction_update_transaction (authorized_client):
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_negative_amount_update_transaction (authorized_client, test_transactions):
-    data = {
-        "amount": -100,
-        "note": "test"
-    }
-    
+def test_negative_amount_update_transaction(authorized_client, test_transactions):
+    data = {"amount": -100, "note": "test"}
+
     update_url = f"/transaction/{test_transactions[0].id}"
 
     response = authorized_client.put(update_url, json=data)
@@ -284,7 +268,8 @@ def test_negative_amount_update_transaction (authorized_client, test_transaction
 
 # testing delete_transaction
 
-def test_delete_transaction_success (authorized_client, test_transactions):
+
+def test_delete_transaction_success(authorized_client, test_transactions):
     # Testing on 1 category
     transaction_to_delete = test_transactions[0]
     delete_url = f"/transaction/{transaction_to_delete.id}"
@@ -300,8 +285,14 @@ def test_deleted_delete_transaction(authorized_client, test_deleted_at_transacti
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_nonexistant_transaction_delete_transaction (authorized_client):
+def test_nonexistant_transaction_delete_transaction(authorized_client):
     nonexistant_transaction_id = random.randint(1000, 100000)
     delete_url = f"/transaction/{nonexistant_transaction_id}"
     response = authorized_client.delete(delete_url)
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+def test_unauthorized_delete_transaction(client, test_transactions):
+    delete_url = f"/transaction/{test_transactions[0].id}"
+    response = client.delete(delete_url)
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED

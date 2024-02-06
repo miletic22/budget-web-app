@@ -4,8 +4,12 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
-from app.utils import (check_deleted, check_existence, get_budget_query_by_id,
-                       reactivate_soft_deleted_budget)
+from app.utils import (
+    check_deleted,
+    check_existence,
+    get_budget_query_by_id,
+    reactivate_soft_deleted_budget,
+)
 
 from .. import models, oauth2, schemas
 from ..database import get_db
@@ -16,7 +20,8 @@ router = APIRouter(prefix="/budgets", tags=["Budgets"])
 # for easier testing purposes
 @router.get("/all", response_model=List[schemas.BudgetOut])
 def get_all_budgets(
-    db: Session = Depends(get_db),):
+    db: Session = Depends(get_db),
+):
     # Filter budgets no matter if they were soft-deleted
     budgets = db.query(models.Budget).all()
     return budgets
@@ -52,7 +57,7 @@ def create_budget(
         )
         .first()
     )
-    
+
     check_existence(
         existing_budget,
         custom_message=f"User with id: {current_user.id} already has a budget",
@@ -74,11 +79,11 @@ def create_budget(
     )
     if soft_deleted_budget:
         return soft_deleted_budget
-    
+
     if budget.amount < 0:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Budget amount cannot be negative"
+            detail="Budget amount cannot be negative",
         )
     # Create a new budget if all checks pass
     new_budget_data = {**budget.model_dump(), "user_id": current_user.id}
@@ -100,11 +105,8 @@ def update_budget(
     budget_query = db.query(models.Budget).filter(
         models.Budget.user_id == current_user.id
     )
-    
-    check_existence(
-        budget_query.first(),
-        custom_message="Budget not set"
-    )
+
+    check_existence(budget_query.first(), custom_message="Budget not set")
     existing_budget = budget_query.first()
 
     check_deleted(existing_budget)
@@ -112,7 +114,7 @@ def update_budget(
     if budget.amount < 0:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Budget amount cannot be negative"
+            detail="Budget amount cannot be negative",
         )
     existing_budget.updated_at = func.now()
     budget_query.update(budget.model_dump(), synchronize_session=False)
