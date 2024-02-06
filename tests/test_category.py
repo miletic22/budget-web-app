@@ -123,13 +123,13 @@ def test_create_category_deleted_budget(
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_create_category_invalid_data(authorized_client):
+def test_invalid_data_create_category(authorized_client):
     data = {"name": "aaa"}
     response = authorized_client.post("/category/", json=data)
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_create_negative_amount_category(authorized_client):
+def test_negative_amount_create_category(authorized_client):
     data = {"name": "aaa", "amount": -100}
     response = authorized_client.post("/budgets/", json=data)
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
