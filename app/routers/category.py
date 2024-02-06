@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -58,6 +58,12 @@ def create_category(
 
     check_existence(existing_budget, "Budget not found")
     check_deleted(existing_budget)
+    
+    if category_create.amount < 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Category amount cannot be negative"
+        )
 
     category_data = {
         **category_create.model_dump(),
@@ -110,3 +116,4 @@ def delete_category(
 
     existing_category.deleted_at = func.now()
     db.commit()
+
