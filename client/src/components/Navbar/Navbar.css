@@ -1,0 +1,122 @@
+/* FILEPATH: /e:/web-practice/my-app/src/Navbar.css */
+
+/* Reset default styles for html, body, and nav elements */
+html,
+body,
+nav {
+  margin: 0;
+  padding: 0;
+  font-size: 62.5%;
+  font-family: "Raleway", sans-serif;
+  text-transform: uppercase; 
+}
+
+/* Style the navigation bar */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #19223C;
+  padding: 2rem 50rem;
+}
+
+/* Style the navigation menu */
+nav ul {
+  display: flex;
+  list-style: none;
+}
+
+/* Style the navigation items */
+.navitem {
+  margin: 0 5rem;
+}
+
+/* Style the right side of the navigation bar */
+.right-side {
+  display: flex;
+  align-items: center;
+}
+
+/* Style the profile image on the right side */
+.right-side img {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  margin: 0 1rem;
+}
+
+/* Style the links on the left side */
+.left-side a {
+  color: white;
+  text-decoration: none;
+}
+
+.right-side p {
+  user-select: none;
+  font-size: 2rem;
+  color: white;
+}
+
+/* FILEPATH: /e:/web-practice/my-app/src/Navbar.css */
+
+/* Reset default styles for html, body, and nav elements */
+html,
+body,
+nav {
+  margin: 0;
+  padding: 0;
+  font-size: 62.5%;
+  font-family: "Raleway", sans-serif;
+  text-transform: uppercase; /* BEGIN: Add text-transform property */
+}
+
+/* Style the navigation bar */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #19223C;
+  padding: 2rem 50rem;
+}
+
+/* Style the navigation menu */
+nav ul {
+  display: flex;
+  list-style: none;
+}
+
+/* Style the navigation items */
+.navitem {
+  margin: 0 5rem;
+}
+
+/* Style the right side of the navigation bar */
+.right-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Style the profile image on the right side */
+.right-side img {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  margin: 0 1rem;
+}
+
+/* Style the links on the left side */
+.left-side a {
+  color: white;
+  text-decoration: none;
+  font-size: 2rem;
+  text-transform: uppercase; /* BEGIN: Add text-transform property */
+}
+
+/* Style the right side links */
+.right-side a {
+  display: flex;
+  text-decoration: none;
+  font-size: 3rem;
+  text-transform: uppercase; /* BEGIN: Add text-transform property */
+}
