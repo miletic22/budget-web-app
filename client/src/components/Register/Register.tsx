@@ -5,7 +5,7 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmationPassword, setConfirmationPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState("");
   const [token, setToken] = useContext(UserContext);
 
   const submitRegistration = async () => {
@@ -20,7 +20,7 @@ export default function Register() {
       const data = await response.json();
 
       if (!response.ok) {
-        setErrorMessage(data.detail);
+        setMessage(data.detail);
       } else {
         console.log(data.access_token);
         setToken(data.access_token);
@@ -39,58 +39,49 @@ export default function Register() {
     if (password === confirmationPassword) {
       submitRegistration();
     } else {
-      setErrorMessage(
+      setMessage(
         "Ensure that the passwords match and are greater than 5 characters"
       );
     }
   };
 
   return (
-    <div className="column">
-      <form className="box" onSubmit={handleSubmit}>
-        <h1 className="title has-text-centered">Register</h1>
-        <div className="field">
-          <label className="label">Email Address</label>
-          <div className="control">
-            <input
-              type="email"
-              placeholder="Enter email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="input"
-              required />
-          </div>
-        </div>
-        <div className="field">
-          <label className="label">Password</label>
-          <div className="control">
-            <input
-              type="password"
-              placeholder="Enter password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="input"
-              required />
-          </div>
-        </div>
-        <div className="field">
-          <label className="label">Confirm Password</label>
-          <div className="control">
-            <input
-              type="password"
-              placeholder="Enter password"
-              value={confirmationPassword}
-              onChange={(e) => setConfirmationPassword(e.target.value)}
-              className="input"
-              required />
-          </div>
-        </div>
-        <h1>{JSON.stringify(errorMessage)}</h1>
-        <br />
-        <button className="button is-primary" type="submit">
-          Register
-        </button>
-      </form>
-    </div>
+    <form className="box" onSubmit={handleSubmit}>
+      <label className="label">Email Address</label>
+      <input
+        type="email"
+        placeholder="Enter email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="input"
+        required
+      />
+
+      <label className="label">Password</label>
+      <input
+        type="password"
+        placeholder="Enter password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="input"
+        required
+      />
+
+      <label className="label">Confirm Password</label>
+      <input
+        type="password"
+        placeholder="Enter password"
+        value={confirmationPassword}
+        onChange={(e) => setConfirmationPassword(e.target.value)}
+        className="input"
+        required
+      />
+
+      <h1>{JSON.stringify(message)}</h1>
+      <br />
+      <button className="button is-primary" type="submit">
+        Register
+      </button>
+    </form>
   );
 }

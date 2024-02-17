@@ -5,7 +5,7 @@ import type { Category } from './Modals/CategoryModals';
 import CategoryList from './CategoriesList';
 
 
-export default function Table() {
+export default function CategoriesTable() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {

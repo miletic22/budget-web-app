@@ -5,7 +5,7 @@ import { UserContext } from "../../context/UserContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState("");
   const [, setToken] = useContext(UserContext);
 
   const submitLogin = async () => {
@@ -21,9 +21,10 @@ const Login = () => {
     const data = await response.json();
 
     if (!response.ok) {
-      setErrorMessage(data.detail);
+      setMessage(data.detail);
     } else {
       setToken(data.access_token);
+      setMessage("Success! Logged in as " + email);
     }
   };
 
@@ -34,7 +35,7 @@ const Login = () => {
 
   return (
     <form className="box" onSubmit={handleSubmit}>
-      <label>Email Address</label>
+      <label>Email Address or Username</label>
       <input
         type="email"
         placeholder="Enter email"
@@ -52,7 +53,7 @@ const Login = () => {
         className="input"
         required
       />
-      <h1>{JSON.stringify(errorMessage)}</h1>
+      <h1>{JSON.stringify(message)}</h1>
       <br />
       <button className="button is-primary" type="submit">
         Login
