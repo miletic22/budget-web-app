@@ -1,42 +1,71 @@
 import React from 'react';
 import './Navbar.css';
 import Logo from '../../assets/icon-logo.svg';
-
-interface NavItemProps {
-  url: string;
-  text: string;
-}
-
-const navItems: NavItemProps[] = [
-  { text: "How it works", url: "#" },
-  { text: "Additional", url: "#" },
-  { text: "About", url: "#" },
-];
+import { Link, NavLink } from 'react-router-dom';
+import isLoggedIn from '../../utils/auth';
 
 const Navbar: React.FC = () => {
+  const activeStyles = {
+    fontWeight: "bold",
+    color: "#161616"
+  };
+
   return (
     <nav>
-      <div className="right-side">
-        <a href="#">
-          <img src={Logo} alt="Logo" />
-          <p>BUDGETER</p>
-        </a>
-      </div>
-      <div className="left-side">
-        <ul>
-          {navItems.map((item, index) => (
-            <li key={index} className="navitem">
-              <NavItem url={item.url} text={item.text} />
+      <div className="navbar-top">
+        <div className="nav-logo">
+          <Link to="/home">
+            <img src={Logo} alt="Logo" />
+          </Link>
+        </div>
+        <div className="nav-content">
+          <ul>
+            <li>
+              <NavLink 
+                to="/home"
+                style={({isActive}) => isActive ? activeStyles : {}}
+              >
+                Home
+              </NavLink>
             </li>
-          ))}
-        </ul>
+            {!isLoggedIn() && (
+              <>
+                <li>
+                  <NavLink 
+                    to="/login"
+                    style={({isActive}) => isActive ? activeStyles : {}}
+                  >
+                    Login
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink 
+                    to="/register"
+                    style={({isActive}) => isActive ? activeStyles : {}}
+                  >
+                    Register
+                  </NavLink>
+                </li>
+              </>
+            )}
+            {isLoggedIn() && (
+              <li>
+                <NavLink 
+                  to="/logout"
+                  style={({isActive}) => isActive ? activeStyles : {}}
+                >
+                  Logout
+                </NavLink>
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
+      <div className="navbar-bottom">
+        <a href="https://github.com/miletic22">Goran 2024</a>
       </div>
     </nav>
   );
-};
-
-const NavItem: React.FC<NavItemProps> = ({ url, text }) => {
-  return <a href={url}>{text}</a>;
 };
 
 export default Navbar;

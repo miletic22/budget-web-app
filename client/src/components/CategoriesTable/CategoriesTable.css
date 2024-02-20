@@ -163,7 +163,7 @@
 }
 
 .modal-content {
-  position: relative; /* Make sure it's positioned relatively */
+  position: relative;
 
   background-color: #fff;
   padding: 4rem 8rem;

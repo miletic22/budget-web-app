@@ -1,0 +1,17 @@
+.remember-me {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.forgot-password a{
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: #000;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
+

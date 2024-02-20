@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import EditButton from '../buttons/EditButton';
-import { EditModalBox } from './Modals/CategoryEditModal'; // Import EditModalBox
-import { DeleteModalBox } from './Modals/CategoryDeleteModal'; // Import DeleteModalBox
+import { EditModalBox } from './Modals/CategoryEditModal'; 
+import { DeleteModalBox } from './Modals/CategoryDeleteModal'; 
 import DeleteButton from '../buttons/DeleteButton';
 import { Category } from './Modals/CategoryModals';
 

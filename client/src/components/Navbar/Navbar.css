@@ -1,122 +1,61 @@
-/* FILEPATH: /e:/web-practice/my-app/src/Navbar.css */
-
-/* Reset default styles for html, body, and nav elements */
-html,
-body,
-nav {
-  margin: 0;
-  padding: 0;
-  font-size: 62.5%;
-  font-family: "Raleway", sans-serif;
-  text-transform: uppercase; 
-}
-
-/* Style the navigation bar */
 nav {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-  background-color: #19223C;
-  padding: 2rem 50rem;
+  position: absolute;
+  background-color: #E6E6E6;
+  width: 15%;
+  height: 100vh;
+  border-right: 1px solid #bfbdbd;
 }
 
-/* Style the navigation menu */
-nav ul {
+.nav-logo a{
   display: flex;
-  list-style: none;
-}
-
-/* Style the navigation items */
-.navitem {
-  margin: 0 5rem;
-}
-
-/* Style the right side of the navigation bar */
-.right-side {
-  display: flex;
-  align-items: center;
-}
-
-/* Style the profile image on the right side */
-.right-side img {
-  width: 5rem;
-  height: 5rem;
-  border-radius: 50%;
-  margin: 0 1rem;
-}
-
-/* Style the links on the left side */
-.left-side a {
-  color: white;
-  text-decoration: none;
-}
-
-.right-side p {
-  user-select: none;
-  font-size: 2rem;
-  color: white;
-}
-
-/* FILEPATH: /e:/web-practice/my-app/src/Navbar.css */
-
-/* Reset default styles for html, body, and nav elements */
-html,
-body,
-nav {
-  margin: 0;
-  padding: 0;
-  font-size: 62.5%;
-  font-family: "Raleway", sans-serif;
-  text-transform: uppercase; /* BEGIN: Add text-transform property */
-}
-
-/* Style the navigation bar */
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #19223C;
-  padding: 2rem 50rem;
-}
-
-/* Style the navigation menu */
-nav ul {
-  display: flex;
-  list-style: none;
-}
-
-/* Style the navigation items */
-.navitem {
-  margin: 0 5rem;
-}
-
-/* Style the right side of the navigation bar */
-.right-side {
-  display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #bfbdbd;
 }
 
-/* Style the profile image on the right side */
-.right-side img {
-  width: 5rem;
-  height: 5rem;
-  border-radius: 50%;
-  margin: 0 1rem;
+.nav-logo img {
+  width: 2.5rem;
 }
 
-/* Style the links on the left side */
-.left-side a {
-  color: white;
+.nav-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-content ul li{
+  padding: 1rem;
+  font-size: 1.3rem;
+}
+
+.nav-content a {
+  font-family: Arial;
   text-decoration: none;
-  font-size: 2rem;
-  text-transform: uppercase; /* BEGIN: Add text-transform property */
+  color: black;
+  padding: 2rem;
 }
 
-/* Style the right side links */
-.right-side a {
+.nav-content a:hover {
+  font-weight: bold;
+}
+
+.navbar-bottom {
+  border-top: 1px solid #bfbdbd;
   display: flex;
+  justify-content: center;
+  font-size: 1rem
+}
+
+.navbar-bottom a {
+  padding: 1rem;
   text-decoration: none;
-  font-size: 3rem;
-  text-transform: uppercase; /* BEGIN: Add text-transform property */
+  color: black;
+}
+
+.navbar-bottom a:hover {
+  text-decoration: underline;
 }
