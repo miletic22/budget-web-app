@@ -20,14 +20,7 @@ const Navbar: React.FC = () => {
         </div>
         <div className="nav-content">
           <ul>
-            <li>
-              <NavLink 
-                to="/home"
-                style={({isActive}) => isActive ? activeStyles : {}}
-              >
-                Home
-              </NavLink>
-            </li>
+
             {!isLoggedIn() && (
               <>
                 <li>
@@ -49,6 +42,15 @@ const Navbar: React.FC = () => {
               </>
             )}
             {isLoggedIn() && (
+              <>
+              <li>
+                <NavLink 
+                  to="/home"
+                  style={({isActive}) => isActive ? activeStyles : {}}
+                >
+                  Home
+                </NavLink>
+              </li>
               <li>
                 <NavLink 
                   to="/logout"
@@ -57,6 +59,7 @@ const Navbar: React.FC = () => {
                   Logout
                 </NavLink>
               </li>
+              </>
             )}
           </ul>
         </div>
