@@ -3,16 +3,18 @@ import './index.css';
 import Navbar from './components/Navbar/Navbar';
 import CategoriesTable from './components/CategoriesTable/CategoriesTable';
 import Login from './components/Auth/Login';
-import ClientMessage from './components/Message/MessagePopup';
-import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Router, Routes } from 'react-router-dom';
+import { createRoot } from 'react-dom/client'; // Updated import
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { UserProvider } from './context/UserContext';
 import Register from './components/Auth/Register';
 import Home from './components/Home/Home';
 import Layout from './components/Navbar/Layout';
 import { Logout } from './utils/auth';
 
-ReactDOM.render(
+const container = document.getElementById('root');
+const root = createRoot(container || document.createElement('div'));
+
+root.render(
   <BrowserRouter>
     <UserProvider>
       <Routes>
@@ -24,6 +26,5 @@ ReactDOM.render(
         </Route>
       </Routes>
     </UserProvider>
-  </BrowserRouter>,
-  document.getElementById('root') as HTMLElement
+  </BrowserRouter>
 );

@@ -90,7 +90,7 @@ const Login = () => {
           <MessagePopup text="Logged in successfully." title="success" />
         )}
         {showSuccessMessage && (
-          window.location.href = '/home'
+          window.location.href = "/home"
         )}
 
         <p className="message">Don't have an account? <a href="#">Register</a> instead.</p>
