@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import type { Category } from './Modals/CategoryModals';
 import CategoryList from './CategoriesList';
 import MessagePopup from '../Message/MessagePopup';
-import './Table.css';
-import './Modals/Modals.css'
+import '../ServicesGlobal/Table.css';
+import '../ServicesGlobal/Modals.css';
 
 interface Message {
   text: string;
