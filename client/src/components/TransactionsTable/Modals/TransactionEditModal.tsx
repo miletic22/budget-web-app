@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Transaction } from "./TransactionModals";
+import MessagePopup from "../../Message/MessagePopup";
+import { fetchWithInterceptor } from "../../../utils/auth";
 
 interface EditModalBoxProps {
   transaction: Transaction | null;
@@ -8,10 +10,16 @@ interface EditModalBoxProps {
   onClose: () => void;
 }
 
+interface Message {
+  text: string;
+  title: 'success' | 'failure';
+}
+
 export function EditModalBox({ transaction, fetchingUrl, entityTitle, onClose }: EditModalBoxProps): JSX.Element {
   const [note, setNote] = useState(transaction?.note || "");
   const [amount, setAmount] = useState(transaction?.amount || 0);
-
+  const [isMessageVisible, setIsMessageVisible] = useState(false);
+  const [message, setMessage] = useState<Message[]>([]);
   const handleSave = async () => {
     try {
       const token = localStorage.getItem('JWTToken');
@@ -22,7 +30,7 @@ export function EditModalBox({ transaction, fetchingUrl, entityTitle, onClose }:
         amount,
       };
   
-      const response = await fetch(`http://127.0.0.1:8000/transaction/${categoryId}`, {
+      const response = await fetchWithInterceptor(`http://127.0.0.1:8000/transaction/${categoryId}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -33,12 +41,13 @@ export function EditModalBox({ transaction, fetchingUrl, entityTitle, onClose }:
   
       if (response.ok) {
         window.location.reload();
-        // setMessage([{ text: `${entityTitle} updated`, title: 'success' }]);
-        // setIsMessageVisible(true);
+        setMessage([{ text: `${entityTitle} updated`, title: 'success' }]);
+        setIsMessageVisible(true);
       } else {
         const errorData = await response.json();
-        // setMessage([{ text: `Failed to update ${entityTitle.toLowerCase()}`, title: 'failure' }]);
-        // setIsMessageVisible(true);
+        
+        setMessage([{ text: `Failed to update ${entityTitle.toLowerCase()}`, title: 'failure' }]);
+        setIsMessageVisible(true);
       }
     } catch (error) {
       console.error('Error:', error);

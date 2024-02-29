@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import { fetchWithInterceptor } from "../utils/auth";
 
 interface UserContextProps {
   children: React.ReactNode;
@@ -19,7 +20,7 @@ export const UserProvider: React.FC<UserContextProps> = (props) => {
         },
       };
     
-      const response = await fetch("http://127.0.0.1:8000/users", requestOptions);
+      const response = await fetchWithInterceptor("http://127.0.0.1:8000/users", requestOptions);
     
       if (!response.ok) {
         setToken(null);

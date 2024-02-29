@@ -6,6 +6,7 @@ import { Transaction } from './Modals/TransactionModals';
 import { EditModalBox } from './Modals/TransactionEditModal';
 import { CreateModalBox } from './Modals/TransactionCreateModal';
 import { DeleteModalBox } from './Modals/TransactionDeleteModal';
+import { ViewModalBox } from './Modals/TransactionViewModal';
 
 interface CategoryListProps {
   transactions: Transaction[];
@@ -55,7 +56,7 @@ export default function CategoryList({ transactions }: CategoryListProps) {
           transaction={selectedTransaction}
           onClose={handleCloseModal}
           fetchingUrl={`http://127.0.0.1:8000/transaction/${selectedTransaction?.id}`}
-          entityTitle={'Category'}/>
+          entityTitle={'Transaction'}/>
       );
     } else if (isEditMode === 'delete') {
       return (
@@ -63,23 +64,22 @@ export default function CategoryList({ transactions }: CategoryListProps) {
           transaction={selectedTransaction}
           onClose={handleCloseModal}
           fetchingUrl={`http://127.0.0.1:8000/transaction/${selectedTransaction?.id}`}
-          entityTitle={'Category'}
+          entityTitle={'Transaction'}
         />
       );
     } else if (isEditMode === 'view') {
       return (
-        // <ViewModalBox
-        //   transaction={selectedTransaction}
-        //   onClose={handleCloseModal} 
-        //   entityTitle={'Category'}
-        // />
-      <></>
+        <ViewModalBox
+          transaction={selectedTransaction}
+          onClose={handleCloseModal} 
+          entityTitle={'Transaction'}
+        />
       )
       } else if (isEditMode === 'create') {
         return (
           <CreateModalBox
             onClose={handleCloseModal}
-            entityTitle="Category"
+            entityTitle="Transaction"
             fetchingUrl="http://127.0.0.1:8000/transaction"
             transaction={null}
           />

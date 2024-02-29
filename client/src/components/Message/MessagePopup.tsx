@@ -8,6 +8,7 @@ type MessagePopupProps = {
   title: string;
 };
 
+
 const MessagePopup: React.FC<MessagePopupProps> = ({ text, title }) => {
   const [showMessage, setShowMessage] = useState(true);
   const [exitAnimation, setExitAnimation] = useState(false);

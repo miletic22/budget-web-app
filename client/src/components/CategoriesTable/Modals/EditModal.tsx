@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Category } from "./CategoryModals";
 import { StringLiteral } from "typescript";
+import { fetchWithInterceptor } from "../../../utils/auth";
 
 interface EditModalBoxProps {
   category: Category | null;
@@ -23,7 +24,7 @@ export function EditModalBox({ category, fetchingUrl, entityTitle, onClose }: Ed
         amount,
       };
   
-      const response = await fetch(`http://127.0.0.1:8000/category/${categoryId}`, {
+      const response = await fetchWithInterceptor(`http://127.0.0.1:8000/category/${categoryId}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Category } from "./CategoryModals";
 import MessagePopup from "../../Message/MessagePopup";
+import { fetchWithInterceptor } from "../../../utils/auth";
 
 interface CreateModalBoxProps {
   category: Category | null;
@@ -35,7 +36,7 @@ export function CreateModalBox({
     try {
       const token = localStorage.getItem('JWTToken');
 
-      const response = await fetch(fetchingUrl, {
+      const response = await fetchWithInterceptor(fetchingUrl, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

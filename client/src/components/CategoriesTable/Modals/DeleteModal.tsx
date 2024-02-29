@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import MessagePopup from "../../Message/MessagePopup";
 import { Category } from "./CategoryModals";
+import { fetchWithInterceptor } from "../../../utils/auth";
 
 interface DeleteModalBoxProps {
   category: Category | null;
@@ -32,7 +33,7 @@ export function DeleteModalBox({
     try {
       const token = localStorage.getItem('JWTToken');
 
-      const response = await fetch(fetchingUrl, {
+      const response = await fetchWithInterceptor(fetchingUrl, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

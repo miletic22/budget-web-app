@@ -4,6 +4,7 @@ import CategoryList from './CategoriesList';
 import MessagePopup from '../Message/MessagePopup';
 import '../ServicesGlobal/Table.css';
 import '../ServicesGlobal/Modals.css';
+import { fetchWithInterceptor } from '../../utils/auth';
 
 interface Message {
   text: string;
@@ -19,13 +20,14 @@ export default function CategoriesTable() {
       try {
         const token = localStorage.getItem('JWTToken');
         console.log(token);
-        const response = await fetch('http://127.0.0.1:8000/category/', {
+        const response = await fetchWithInterceptor('http://127.0.0.1:8000/category/', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
+        if 
 
         if (!response.ok) {
           const errorData = await response.json();

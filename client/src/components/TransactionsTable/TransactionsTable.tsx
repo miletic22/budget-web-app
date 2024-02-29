@@ -5,6 +5,7 @@ import MessagePopup from '../Message/MessagePopup';
 import '../ServicesGlobal/Table.css';
 import '../ServicesGlobal/Modals.css';
 import { Transaction } from './Modals/TransactionModals';
+import { fetchWithInterceptor } from '../../utils/auth';
 
 interface Message {
   text: string;
@@ -20,7 +21,7 @@ export default function TransactionsTable() {
       try {
         const token = localStorage.getItem('JWTToken');
         console.log(token);
-        const response = await fetch('http://127.0.0.1:8000/transaction', {
+        const response = await fetchWithInterceptor('http://127.0.0.1:8000/transaction', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
