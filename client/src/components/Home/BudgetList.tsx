@@ -3,6 +3,10 @@ import EditButton from '../buttons/EditButton';
 import DeleteButton from '../buttons/DeleteButton';
 import ViewButton from '../buttons/ViewButton';
 import { Budget } from './Home';
+import { CreateModalBox } from './Modals/BudgetCreateModal';
+import { DeleteModalBox } from './Modals/BudgetDeleteModal';
+import { ViewModalBox } from './Modals/BudgetViewModal';
+import { EditModalBox } from './Modals/BudgetEditModal';
 
 interface BudgetListProps {
   budget: Budget[];
@@ -46,42 +50,43 @@ export default function BudgetList({ budget }: BudgetListProps) {
   const renderModal = () => {
     if (!isModalOpen) return null;
 
-    // if (isEditMode === 'edit') {
-    //   return (
-    //     <EditModalBox
-    //       transaction={selectedTransaction}
-    //       onClose={handleCloseModal}
-    //       fetchingUrl={`http://127.0.0.1:8000/transaction/${selectedTransaction?.id}`}
-    //       entityTitle={'Transaction'}/>
-    //   );
-    // } else if (isEditMode === 'delete') {
-    //   return (
-    //     <DeleteModalBox
-    //       transaction={selectedTransaction}
-    //       onClose={handleCloseModal}
-    //       fetchingUrl={`http://127.0.0.1:8000/transaction/${selectedTransaction?.id}`}
-    //       entityTitle={'Transaction'}
-    //     />
-    //   );
-    // } else if (isEditMode === 'view') {
-    //   return (
-    //     <ViewModalBox
-    //       transaction={selectedTransaction}
-    //       onClose={handleCloseModal} 
-    //       entityTitle={'Transaction'}
-    //     />
-    //   )
-    //   } else if (isEditMode === 'create') {
-    //     return (
-    //       <CreateModalBox
-    //         onClose={handleCloseModal}
-    //         entityTitle="Transaction"
-    //         fetchingUrl="http://127.0.0.1:8000/transaction"
-    //         transaction={null}
-    //       />
-    //     );
+    if (isEditMode === 'create') {
+      return (
+        <CreateModalBox
+            onClose={handleCloseModal}
+            entityTitle="Budget"
+            fetchingUrl="http://127.0.0.1:8000/budgets"
+            budget={null}
+        />
+      );
+    } else if (isEditMode === 'delete') {
+      return (
+        <DeleteModalBox
+          budget={selectedBudget}
+          onClose={handleCloseModal}
+          fetchingUrl="http://127.0.0.1:8000/budgets"
+          entityTitle={'Transaction'}
+        />
+      );
+    } else if (isEditMode === 'view') {
+      return (
+        <ViewModalBox
+          budget={selectedBudget}
+          onClose={handleCloseModal} 
+          entityTitle={'Budget'}
+        />
+      )
+      } else if (isEditMode === 'edit') {
+        return (
+          <EditModalBox
+            onClose={handleCloseModal}
+            entityTitle="Budget"
+            fetchingUrl="http://127.0.0.1:8000/budgets"
+            budget={null}
+          />
+        );
 
-    // }
+    }
 
     return null;
   };
@@ -113,6 +118,7 @@ export default function BudgetList({ budget }: BudgetListProps) {
             ))}
           </tbody>
         </table>
+        <button onClick={handleAddClick} className="button add-button">&#43;</button>
         {renderModal()}
       </div>
     </div>
