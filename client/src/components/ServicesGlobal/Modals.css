@@ -35,7 +35,7 @@ h2 {
   gap: 1rem;
 }
 
-#name, #amount, #categoryId {
+#name, #amount, #categoryId, #note {
   width: 100%;
   padding: 0.5rem;
   font-size: 1.5rem;

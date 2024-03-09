@@ -1,6 +1,5 @@
-// MessagePopup.tsx
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import "./MessagePopup.css";
 
 type MessagePopupProps = {

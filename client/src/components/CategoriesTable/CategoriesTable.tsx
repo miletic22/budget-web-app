@@ -27,8 +27,6 @@ export default function CategoriesTable() {
             'Content-Type': 'application/json',
           },
         });
-        if 
-
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.detail || 'Network response was not ok');

@@ -95,7 +95,7 @@ export default function Register() {
     {showSuccessMessage && (
       <MessagePopup text="Registered successfully." title="success" />
     )}
-    <p className="message">Have an have an account? <a href="#">Login</a> instead.</p>
+    <p className="message">Have an have an account? <a href="/login">Login</a> instead.</p>
     </div>
     </div>
   );
